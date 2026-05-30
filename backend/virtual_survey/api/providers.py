@@ -1,11 +1,10 @@
 """Provider配置API"""
 
-from typing import List, Optional
 import httpx
 
 from fastapi import APIRouter, HTTPException
 
-from ..llm.pack import ModelInfo, ProviderPack, pack_manager
+from ..llm.pack import ProviderPack, pack_manager
 from ..storage.config_store import provider_store
 
 router = APIRouter(prefix="/api/v1/providers", tags=["providers"])
@@ -133,17 +132,17 @@ async def test_provider_connection(provider_name: str):
     import time
     start = time.time()
     try:
+        payload = {
+            "model": pack.default_model,
+            "messages": [{"role": "user", "content": "Hi"}],
+            pack.max_tokens_param: 5,
+            "stream": False,
+        }
         async with httpx.AsyncClient(timeout=15.0) as client:
             resp = await client.post(
                 f"{pack.base_url}/chat/completions",
                 headers=headers,
-                json={
-                    "model": pack.default_model,
-                    "messages": [{"role": "user", "content": "Hi"}],
-                    "max_tokens": 5,
-                    pack.max_tokens_param: 5,
-                    "stream": False,
-                },
+                json=payload,
             )
             latency = round((time.time() - start) * 1000)
             if resp.status_code == 200:

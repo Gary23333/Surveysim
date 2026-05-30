@@ -4,9 +4,10 @@ import uuid
 from datetime import datetime
 from typing import List, Optional
 
-from fastapi import APIRouter, BackgroundTasks, HTTPException
+from fastapi import APIRouter, HTTPException
 
 from ..core.engine import engine
+from ..export.result_io import ResultExporter
 from ..models.task import (
     Task,
     TaskCreate,
@@ -15,22 +16,59 @@ from ..models.task import (
     TaskResults,
     TaskStatus,
     TaskSummary,
-    TaskUpdate,
 )
+from ..storage import task_store
 from ..storage.config_store import survey_store
-from ..export.result_io import ResultExporter
 
 router = APIRouter(prefix="/api/v1/tasks", tags=["tasks"])
 
 
+def _load_survey(survey_id: str):
+    survey = survey_store.get_custom(survey_id)
+    if not survey:
+        survey = survey_store.get_template(survey_id)
+    return survey
+
+
+async def _ensure_session(task_id: str):
+    session = engine.sessions.get(task_id)
+    if session:
+        return session
+
+    task = task_store.get_task(task_id)
+    if not task:
+        return None
+
+    survey = _load_survey(task.survey_id)
+    if not survey:
+        raise HTTPException(status_code=404, detail="Survey not found")
+
+    return await engine.create_session(task, survey)
+
+
+def _build_progress(session=None, results: Optional[dict] = None):
+    if session and session.scenario:
+        return {
+            "current": session.scenario.current_question,
+            "total": len(session.survey.questions),
+            "answered": len(session.scenario.responses),
+        }
+    if results:
+        total = results.get("total_questions", 0)
+        answered = sum(
+            len(question.get("responses", []))
+            for question in results.get("question_results", [])
+            if isinstance(question, dict)
+        )
+        return {"current": total, "total": total, "answered": answered}
+    return None
+
+
 @router.post("/", response_model=TaskResponse)
-async def create_task(task_data: TaskCreate, background_tasks: BackgroundTasks):
+async def create_task(task_data: TaskCreate):
     """创建调研任务"""
     # 验证问卷存在
-    survey = survey_store.get_custom(task_data.survey_id)
-    if not survey:
-        # 尝试从模板获取
-        survey = survey_store.get_template(task_data.survey_id)
+    survey = _load_survey(task_data.survey_id)
     if not survey:
         raise HTTPException(status_code=404, detail="Survey not found")
 
@@ -51,6 +89,7 @@ async def create_task(task_data: TaskCreate, background_tasks: BackgroundTasks):
     # 创建会话
     try:
         await engine.create_session(task, survey)
+        task_store.save_task(task)
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
@@ -73,27 +112,21 @@ async def list_tasks(
     """获取任务列表"""
     tasks = []
 
+    persisted_tasks = {task.id: task for task in task_store.list_tasks(status, scenario_type)}
     for task_id in engine.list_sessions():
         session = engine.sessions.get(task_id)
-        if not session:
-            continue
+        if session:
+            persisted_tasks[task_id] = session.task
 
-        task = session.task
-
+    for task in persisted_tasks.values():
         if status and task.status.value != status:
             continue
 
         if scenario_type and task.scenario_type.value != scenario_type:
             continue
 
-        progress = None
-        if session.scenario:
-            survey_questions = session.survey.get("questions", []) if isinstance(session.survey, dict) else getattr(session.survey, 'questions', [])
-            progress = {
-                "current": session.scenario.current_question,
-                "total": len(survey_questions),
-                "answered": len(session.scenario.responses),
-            }
+        session = engine.sessions.get(task.id)
+        progress = _build_progress(session, task_store.get_task_result(task.id))
 
         tasks.append(TaskSummary(
             id=task.id,
@@ -118,10 +151,9 @@ async def list_tasks(
 async def get_task(task_id: str):
     """获取任务详情"""
     session = engine.sessions.get(task_id)
-    if not session:
+    task = session.task if session else task_store.get_task(task_id)
+    if not task:
         raise HTTPException(status_code=404, detail="Task not found")
-
-    task = session.task
 
     return TaskDetail(
         id=task.id,
@@ -143,7 +175,7 @@ async def get_task(task_id: str):
 @router.post("/{task_id}/start/")
 async def start_task(task_id: str):
     """启动任务"""
-    session = engine.sessions.get(task_id)
+    session = await _ensure_session(task_id)
     if not session:
         raise HTTPException(status_code=404, detail="Task not found")
 
@@ -214,7 +246,7 @@ async def stop_task(task_id: str):
 @router.delete("/{task_id}/")
 async def delete_task(task_id: str):
     """删除任务"""
-    if not engine.has_session(task_id):
+    if not engine.has_session(task_id) and not task_store.get_task(task_id):
         raise HTTPException(status_code=404, detail="Task not found")
 
     session = engine.sessions.get(task_id)
@@ -225,6 +257,7 @@ async def delete_task(task_id: str):
         )
 
     engine.remove_session(task_id)
+    task_store.delete_task(task_id)
     return {"message": "Task deleted", "task_id": task_id}
 
 
@@ -232,6 +265,8 @@ async def delete_task(task_id: str):
 async def get_results(task_id: str):
     """获取任务结果"""
     results = await engine.get_session_results(task_id)
+    if not results:
+        results = task_store.get_task_result(task_id)
     if not results:
         raise HTTPException(status_code=404, detail="Results not found")
 
@@ -271,6 +306,8 @@ async def export_results(task_id: str, format: str):
     """导出任务结果（json/csv）"""
     results = await engine.get_session_results(task_id)
     if not results:
+        results = task_store.get_task_result(task_id)
+    if not results:
         raise HTTPException(status_code=404, detail="Results not found")
 
     if format == "csv":
@@ -287,7 +324,16 @@ async def get_task_status(task_id: str):
     """获取任务状态"""
     status = await engine.get_session_status(task_id)
     if not status:
+        task = task_store.get_task(task_id)
+        results = task_store.get_task_result(task_id)
+        if task:
+            status = {
+                "task_id": task.id,
+                "status": task.status.value,
+                "agents": {},
+                "progress": _build_progress(results=results),
+            }
+    if not status:
         raise HTTPException(status_code=404, detail="Task not found")
 
     return status
-

@@ -1,7 +1,6 @@
 """会话管理"""
 
 import asyncio
-from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 
@@ -40,7 +39,7 @@ class SurveyQuestionWrapper:
 from ..llm.manager import provider_manager
 from ..llm.pack import pack_manager
 from ..models.scenario import AgentResponse, ScenarioResult
-from ..models.task import Task, TaskStatus
+from ..models.task import Task
 from .moderator import AIModerator
 from .moderator_manager import ModeratorManager
 from .respondent import RespondentAgent
@@ -120,29 +119,33 @@ class Session:
 
             self.agents[agent_config.id] = agent
 
-        # 初始化主持人（始终创建 ModeratorManager，支持 AI/人工切换）
+        # 初始化主持人（显式配置优先；未配置时 AI 主持人复用首个 Agent 的 provider_pack）
         moderator_config = self.task.moderator
         ai_moderator = None
-        if moderator_config.type == "ai" or True:
-            provider_name = moderator_config.provider_pack or list(self.agents.values())[0].id if self.agents else None
+        first_agent_config = self.task.agents[0] if self.task.agents else None
+        provider_name = moderator_config.provider_pack
+        if not provider_name and moderator_config.type == "ai" and first_agent_config:
+            provider_name = first_agent_config.provider_pack
+
+        if provider_name:
             ai_provider = provider_manager.get(provider_name) if provider_name else None
             if not ai_provider:
-                ai_provider = list(provider_manager._providers.values())[0] if provider_manager._providers else None
+                raise ValueError(f"Moderator provider '{provider_name}' not found")
             
-            if ai_provider:
-                pack = pack_manager.get_pack(provider_name) if provider_name else None
-                mtc = pack.thinking_config if pack else None
-                mmtp = pack.max_tokens_param if pack else "max_tokens"
+            pack = pack_manager.get_pack(provider_name)
+            mtc = pack.thinking_config if pack else None
+            mmtp = pack.max_tokens_param if pack else "max_tokens"
+            default_model = first_agent_config.model if first_agent_config else "gpt-4o-mini"
 
-                ai_moderator = AIModerator(
-                    provider=ai_provider,
-                    model=moderator_config.model or (pack.default_model if pack else "gpt-4o-mini"),
-                    behavior_prompt=self.behavior_prompts.get(moderator_config.behavior_prompt_id, ""),
-                    thinking_enabled=moderator_config.thinking_enabled,
-                    thinking_intensity=moderator_config.thinking_intensity,
-                    thinking_config=mtc,
-                    max_tokens_param=mmtp,
-                )
+            ai_moderator = AIModerator(
+                provider=ai_provider,
+                model=moderator_config.model or (pack.default_model if pack else default_model),
+                behavior_prompt=self.behavior_prompts.get(moderator_config.behavior_prompt_id, ""),
+                thinking_enabled=moderator_config.thinking_enabled,
+                thinking_intensity=moderator_config.thinking_intensity,
+                thinking_config=mtc,
+                max_tokens_param=mmtp,
+            )
 
         self.moderator_manager = ModeratorManager(ai_moderator) if ai_moderator else ModeratorManager()
         if moderator_config.type == "human":

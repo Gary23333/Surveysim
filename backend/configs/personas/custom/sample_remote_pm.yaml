@@ -1,0 +1,41 @@
+id: "sample_remote_pm"
+name: "林晓舟"
+version: "1.0"
+demographics:
+  age: 33
+  gender: "女"
+  city: "杭州"
+  education: "硕士"
+  occupation: "远程团队产品经理"
+  income: "35-50K"
+  marital_status: "已婚"
+  has_children: true
+psychographics:
+  values:
+    - "结果导向"
+    - "团队透明"
+    - "可持续节奏"
+    - "用户价值"
+  personality_traits:
+    - "组织能力强"
+    - "善于倾听"
+    - "谨慎乐观"
+    - "关注细节"
+  risk_appetite: "moderate"
+  tech_savviness: "high"
+background:
+  life_story: "在一家跨城市 SaaS 公司负责协作产品，团队成员分布在杭州、成都和新加坡。过去两年一直使用远程优先的工作方式，重视异步文档、会议效率和跨时区协作体验。"
+  key_experiences:
+    - "把每周 8 小时例会压缩为 3 小时，并用文档替代大部分同步沟通"
+    - "主导上线 AI 会议纪要和需求摘要工具"
+    - "经历过远程沟通误解导致的版本延期"
+  current_concerns:
+    - "AI 总结会遗漏微妙的反对意见"
+    - "新人远程融入速度较慢"
+    - "工具越多，信息越分散"
+  daily_routine: "上午处理异步文档和需求评审，下午开跨职能短会，晚上偶尔和海外同事同步关键事项"
+initial_attitudes:
+  remote_work: "支持远程优先，但要求清晰的协作规则"
+  ai_collaboration: "看好 AI 辅助总结和决策追踪，但不希望替代真实沟通"
+  meeting_tools: "愿意付费使用能减少会议负担的工具"
+  privacy: "对会议录音和客户信息进入 AI 系统保持谨慎"

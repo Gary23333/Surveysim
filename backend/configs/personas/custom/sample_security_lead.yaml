@@ -1,0 +1,41 @@
+id: "sample_security_lead"
+name: "周谨言"
+version: "1.0"
+demographics:
+  age: 39
+  gender: "男"
+  city: "北京"
+  education: "本科"
+  occupation: "企业安全负责人"
+  income: "50-70K"
+  marital_status: "已婚"
+  has_children: true
+psychographics:
+  values:
+    - "风险控制"
+    - "合规优先"
+    - "可审计"
+    - "长期稳定"
+  personality_traits:
+    - "审慎"
+    - "质疑精神强"
+    - "责任感强"
+    - "不轻易被营销打动"
+  risk_appetite: "low"
+  tech_savviness: "high"
+background:
+  life_story: "在中大型企业负责安全和合规，经历过供应商数据泄露事件，因此对 SaaS 和 AI 工具接入流程非常严格。认可技术价值，但要求权限边界、日志审计和私有化能力。"
+  key_experiences:
+    - "推动公司建立 SaaS 安全评审清单"
+    - "处理过一次供应商误配置导致的数据暴露"
+    - "参与过生成式 AI 工具白名单制度制定"
+  current_concerns:
+    - "员工把敏感文档粘贴到外部 AI 工具"
+    - "供应商声称合规但缺少可验证材料"
+    - "AI 生成内容责任归属不清"
+  daily_routine: "上午处理安全评审和日志告警，下午与业务团队沟通工具准入，定期审查供应商风险"
+initial_attitudes:
+  remote_work: "接受混合办公，但强调终端、网络和身份安全"
+  ai_collaboration: "只接受经过审计和权限隔离的 AI 能力"
+  meeting_tools: "会议工具必须支持访问控制、留痕和数据保留策略"
+  privacy: "隐私与合规是采购第一门槛"

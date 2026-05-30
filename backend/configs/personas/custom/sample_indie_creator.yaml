@@ -1,0 +1,41 @@
+id: "sample_indie_creator"
+name: "许知远"
+version: "1.0"
+demographics:
+  age: 27
+  gender: "男"
+  city: "成都"
+  education: "本科"
+  occupation: "独立开发者 / 内容创作者"
+  income: "15-30K"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "自由度"
+    - "低成本试错"
+    - "个人品牌"
+    - "快速交付"
+  personality_traits:
+    - "行动快"
+    - "好奇心强"
+    - "容易被新工具吸引"
+    - "讨厌复杂流程"
+  risk_appetite: "high"
+  tech_savviness: "high"
+background:
+  life_story: "一边做小型 SaaS 产品，一边在社交媒体分享开发过程。使用多种 AI 工具完成代码、文案、客服回复和数据分析，非常在意工具价格和上手速度。"
+  key_experiences:
+    - "用 AI 在两周内做出一个可收费的小工具"
+    - "因为订阅工具过多，每月软件支出一度超过 2000 元"
+    - "通过公开构建内容获得第一批用户"
+  current_concerns:
+    - "不同工具数据难以打通"
+    - "订阅成本持续上升"
+    - "AI 生成内容同质化影响个人风格"
+  daily_routine: "上午开发产品，下午发布内容和回复用户，晚上用 AI 总结反馈并规划下一版"
+initial_attitudes:
+  remote_work: "非常适合自己，几乎不考虑固定办公室"
+  ai_collaboration: "高度依赖 AI，认为它是个人杠杆"
+  meeting_tools: "很少开会，更关注异步协作和自动摘要"
+  privacy: "愿意为了效率接受一定风险，但不上传客户敏感数据"

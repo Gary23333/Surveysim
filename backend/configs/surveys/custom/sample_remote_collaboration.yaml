@@ -1,0 +1,104 @@
+id: "sample_remote_collaboration"
+name: "远程团队 AI 协作体验调研"
+description: "评估远程或混合团队使用 AI 会议纪要、异步文档和自动待办工具时的真实体验与顾虑"
+version: "1.0"
+category: "远程协作"
+
+questions:
+  - id: "q1"
+    type: "single_choice"
+    text: "您目前所在团队的工作模式更接近哪一种？"
+    options:
+      - "完全远程"
+      - "远程优先，偶尔线下"
+      - "混合办公，固定到办公室"
+      - "主要线下，少量远程"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q2"
+    type: "multiple_choice"
+    text: "远程协作中最影响效率的问题有哪些？（多选）"
+    options:
+      - "会议过多"
+      - "信息散落在多个工具"
+      - "责任人和截止时间不清楚"
+      - "跨时区沟通延迟"
+      - "新人融入困难"
+      - "上下文丢失"
+      - "客户或外部伙伴沟通成本高"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q3"
+    type: "open_ended"
+    text: "请描述一次远程协作中让您印象深刻的低效或误解场景。"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q4"
+    type: "open_ended"
+    text: "您对 AI 自动生成会议纪要和待办事项的信任程度如何？"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+    enable_text: true
+    enable_rating: true
+    rating_config:
+      min_value: 1
+      max_value: 10
+      min_label: "完全不信任"
+      max_label: "完全信任"
+
+  - id: "q5"
+    type: "multiple_choice"
+    text: "选择 AI 协作工具时，您最看重哪些能力？（多选）"
+    options:
+      - "纪要准确"
+      - "自动识别待办和责任人"
+      - "和现有工具集成"
+      - "权限控制和审计"
+      - "支持中文语境"
+      - "可编辑和可追溯"
+      - "低学习成本"
+      - "价格合理"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q6"
+    type: "single_choice"
+    text: "如果 AI 协作工具每月按用户收费，您认为合理价格区间是？"
+    options:
+      - "只接受免费"
+      - "10-30 元/人/月"
+      - "30-80 元/人/月"
+      - "80-150 元/人/月"
+      - "只要效果好，价格不是主要问题"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q7"
+    type: "open_ended"
+    text: "在隐私、安全或合规方面，什么情况会让您拒绝使用 AI 协作工具？"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q8"
+    type: "open_ended"
+    text: "如果只能增加一个功能，您希望 AI 协作工具优先解决什么问题？"
+    required: false
+    mode: "global"
+    visibility: "isolated"
+    enable_text: true
+    enable_rating: true
+    rating_config:
+      min_value: 1
+      max_value: 10
+      min_label: "不重要"
+      max_label: "非常重要"

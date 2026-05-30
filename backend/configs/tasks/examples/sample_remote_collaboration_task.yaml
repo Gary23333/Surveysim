@@ -1,0 +1,67 @@
+name: "样例任务：远程团队 AI 协作体验调研"
+description: "公开演示任务，使用样例人格和样例问卷，不包含真实个人信息或密钥。可将本文件内容作为 POST /api/v1/tasks/ 的请求体。"
+scenario_type: "survey"
+survey_id: "sample_remote_collaboration"
+agents:
+  - id: "sample_agent_remote_pm"
+    name: "林晓舟"
+    persona_id: "sample_remote_pm"
+    provider_pack: "OpenAI"
+    model: "gpt-4o-mini"
+    behavior_prompt_id: "analytical"
+    memory_config:
+      history_size: 8
+      max_anchors: 8
+      enable_attitude_tracking: true
+    thinking_enabled: false
+    thinking_intensity: "medium"
+  - id: "sample_agent_security_lead"
+    name: "周谨言"
+    persona_id: "sample_security_lead"
+    provider_pack: "OpenAI"
+    model: "gpt-4o-mini"
+    behavior_prompt_id: "critical"
+    memory_config:
+      history_size: 8
+      max_anchors: 8
+      enable_attitude_tracking: true
+    thinking_enabled: false
+    thinking_intensity: "medium"
+  - id: "sample_agent_indie_creator"
+    name: "许知远"
+    persona_id: "sample_indie_creator"
+    provider_pack: "OpenAI"
+    model: "gpt-4o-mini"
+    behavior_prompt_id: "honest"
+    memory_config:
+      history_size: 8
+      max_anchors: 8
+      enable_attitude_tracking: true
+    thinking_enabled: false
+    thinking_intensity: "medium"
+  - id: "sample_agent_ops_manager"
+    name: "孟雨晴"
+    persona_id: "sample_ops_manager"
+    provider_pack: "OpenAI"
+    model: "gpt-4o-mini"
+    behavior_prompt_id: "detailed"
+    memory_config:
+      history_size: 8
+      max_anchors: 8
+      enable_attitude_tracking: true
+    thinking_enabled: false
+    thinking_intensity: "medium"
+moderator:
+  type: "ai"
+  provider_pack: "OpenAI"
+  model: "gpt-4o-mini"
+  behavior_prompt_id: "neutral"
+  thinking_enabled: false
+  thinking_intensity: "medium"
+settings:
+  default_visibility: "isolated"
+  auto_follow_up: true
+  follow_up_threshold: 30
+  max_follow_up_depth: 2
+  delay_between_questions: 0.5
+  memory_window_size: 8

@@ -351,6 +351,20 @@ DEBUG=true
 
 ---
 
+## 🔧 修复执行记录
+
+> 本节记录当前稳定化修复的执行进度。每完成一个修复步骤都会同步更新，便于复查验证结果。
+
+- [x] 2026-05-31：完成基线核查，确认 clean clone 前端构建、lint、WebSocket 广播、主持人 provider 选择、任务持久化、Provider 连通性测试 payload、LICENSE 缺失等问题需要修复。
+- [x] 2026-05-31：修复前端 clean clone 构建阻塞：收窄 `.gitignore` 的 `lib/` 规则，纳入 `frontend/src/lib/utils.ts`，补充 ESLint 配置；本地 `npm run type-check`、`npm run build`、`npm run lint` 均通过。
+- [x] 2026-05-31：修复 WebSocket 实时广播注入与主持人 provider 选择：engine 现在会回填已有 session 的 WebSocket manager；AI 主持人不再把第一个 agent id 当 provider name。`python3 -m compileall -q backend/virtual_survey` 与后端 app import 均通过。
+- [x] 2026-05-31：修复 Provider 连通性测试 payload，并补充 MIT `LICENSE` 文件。`max_tokens` / `max_completion_tokens` 现在按 provider pack 只发送一个字段。
+- [x] 2026-05-31：实现任务与结果持久化第一版：新增 SQLite `TaskRecord`，保存任务配置、状态和结果；任务列表、详情、状态、结果和导出 API 现在支持从数据库恢复。已通过 compileall、app import、任务/结果写入读取删除的本地校验。
+- [x] 2026-05-31：补充后端持久化/API/WebSocket 回填测试和 GitHub Actions CI。当前 `python3 -m pytest` 为 3 passed，前端 `npm run type-check && npm run build && npm run lint` 通过；Ruff 暂未纳入阻塞 CI，因为现有代码存在大量历史风格告警，需要单独清理。
+- [x] 2026-05-31：完成端到端验证：使用独立 SQLite 数据库启动后端和前端，API 成功恢复持久化任务/结果，浏览器访问任务列表和结果页均正常展示；干净副本中前端 `npm ci && npm run type-check && npm run build && npm run lint` 通过，后端 `python3 -m compileall -q virtual_survey && python3 -m pytest` 通过。
+
+---
+
 ## 🗺️ 路线图
 
 - [x] 🎭 三层人格架构

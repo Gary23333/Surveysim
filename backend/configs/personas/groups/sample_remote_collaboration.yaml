@@ -1,0 +1,9 @@
+id: "sample_remote_collaboration"
+name: "远程协作样例人群"
+description: "用于演示远程办公、AI 协作和会议工具调研的公开样例人格组合"
+persona_ids:
+  - "sample_remote_pm"
+  - "sample_security_lead"
+  - "sample_indie_creator"
+  - "sample_ops_manager"
+created_at: "2026-05-31T10:00:00"

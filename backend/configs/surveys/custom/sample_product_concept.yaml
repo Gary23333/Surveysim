@@ -1,0 +1,63 @@
+id: "sample_product_concept"
+name: "AI 会议助手产品概念测试"
+description: "用于快速测试 AI 会议助手的定位、价值感、付费意愿和风险感知"
+version: "1.0"
+category: "产品概念测试"
+
+questions:
+  - id: "q1"
+    type: "open_ended"
+    text: "看到「自动生成会议纪要、提取待办并同步到项目管理工具」这个概念时，您的第一反应是什么？"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q2"
+    type: "single_choice"
+    text: "这个产品最吸引您的核心价值是？"
+    options:
+      - "减少手动记录"
+      - "降低事项遗漏"
+      - "让跨团队协作更透明"
+      - "沉淀可搜索的知识库"
+      - "暂时没有明显吸引力"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q3"
+    type: "multiple_choice"
+    text: "您希望它优先集成哪些工具？（多选）"
+    options:
+      - "飞书 / Lark"
+      - "企业微信"
+      - "钉钉"
+      - "Slack"
+      - "Notion"
+      - "Jira"
+      - "Linear"
+      - "Salesforce / CRM"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q4"
+    type: "open_ended"
+    text: "您认为这个产品最可能失败的原因是什么？"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q5"
+    type: "open_ended"
+    text: "请给这个产品的购买意愿打分，并说明原因。"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+    enable_text: true
+    enable_rating: true
+    rating_config:
+      min_value: 1
+      max_value: 10
+      min_label: "完全不愿意"
+      max_label: "非常愿意"

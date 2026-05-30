@@ -20,6 +20,9 @@ def init_db() -> None:
     # 确保数据目录存在
     settings.DATA_DIR.mkdir(parents=True, exist_ok=True)
 
+    # 导入表模型，确保 SQLModel metadata 已注册
+    from . import task_store  # noqa: F401
+
     # 创建所有表
     SQLModel.metadata.create_all(engine)
 

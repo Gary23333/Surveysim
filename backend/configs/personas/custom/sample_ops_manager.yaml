@@ -1,0 +1,41 @@
+id: "sample_ops_manager"
+name: "孟雨晴"
+version: "1.0"
+demographics:
+  age: 31
+  gender: "女"
+  city: "上海"
+  education: "本科"
+  occupation: "客户成功运营经理"
+  income: "25-40K"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "客户满意"
+    - "流程标准化"
+    - "响应速度"
+    - "跨团队协同"
+  personality_traits:
+    - "沟通主动"
+    - "抗压"
+    - "注重事实"
+    - "对工具稳定性敏感"
+  risk_appetite: "moderate"
+  tech_savviness: "medium"
+background:
+  life_story: "负责企业客户续约和上线陪跑，经常需要把客户会议、内部工单、产品反馈和续约风险串起来。远程协作提升了招聘灵活性，但也让信息同步成本变高。"
+  key_experiences:
+    - "用 AI 从客户会议中提取待办事项，减少漏跟进"
+    - "因为会议纪要不一致导致客户承诺项延期"
+    - "搭建过客户健康度周报流程"
+  current_concerns:
+    - "AI 摘要无法识别客户语气里的风险信号"
+    - "销售、产品、客服各自使用不同工具"
+    - "自动化太多时团队容易忽略人情沟通"
+  daily_routine: "上午看客户风险和工单，下午参加客户会议，晚上整理纪要、分派待办并同步产品反馈"
+initial_attitudes:
+  remote_work: "支持弹性办公，但客户关键阶段仍希望面对面沟通"
+  ai_collaboration: "欢迎 AI 减少记录和整理工作，但最终判断需要人负责"
+  meeting_tools: "最看重待办提取、责任人分配和 CRM 同步"
+  privacy: "客户会议数据必须明确告知用途并可控制"

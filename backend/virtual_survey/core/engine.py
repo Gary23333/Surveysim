@@ -4,9 +4,9 @@ import asyncio
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
-from ..llm.manager import provider_manager
 from ..models.task import Task, TaskStatus
-from ..storage.config_store import persona_store, survey_store, behavior_prompt_store
+from ..storage.config_store import behavior_prompt_store, persona_store
+from ..storage.task_store import save_task, save_task_result
 from .session import Session
 
 
@@ -17,6 +17,12 @@ class SurveyEngine:
         self.websocket_manager = websocket_manager
         self.sessions: Dict[str, Session] = {}
         self._running_tasks: Dict[str, asyncio.Task] = {}
+
+    def set_websocket_manager(self, websocket_manager: Any) -> None:
+        """设置 WebSocket 管理器，并回填已有会话。"""
+        self.websocket_manager = websocket_manager
+        for session in self.sessions.values():
+            session.websocket_manager = websocket_manager
 
     async def create_session(
         self,
@@ -61,6 +67,7 @@ class SurveyEngine:
         # 更新任务状态
         session.task.status = TaskStatus.RUNNING
         session.task.started_at = datetime.now()
+        save_task(session.task)
 
         # 后台执行
         async_task = asyncio.create_task(self._run_session(session))
@@ -74,10 +81,20 @@ class SurveyEngine:
             await session.run()
             session.task.status = TaskStatus.COMPLETED
             session.task.completed_at = datetime.now()
+            results = session.get_results()
+            if results:
+                save_task_result(session.task, results)
+            else:
+                save_task(session.task)
         except Exception as e:
             import traceback
             session.task.status = TaskStatus.ERROR
             session.task.error_message = str(e)
+            results = session.get_results()
+            if results:
+                save_task_result(session.task, results)
+            else:
+                save_task(session.task)
             print(f"Session error: {e}")
             traceback.print_exc()
         finally:
@@ -91,6 +108,7 @@ class SurveyEngine:
         if session:
             await session.pause()
             session.task.status = TaskStatus.PAUSED
+            save_task(session.task)
 
     async def resume_task(self, task_id: str) -> None:
         """恢复任务"""
@@ -98,6 +116,7 @@ class SurveyEngine:
         if session:
             await session.resume()
             session.task.status = TaskStatus.RUNNING
+            save_task(session.task)
 
     async def stop_task(self, task_id: str) -> None:
         """停止任务"""
@@ -105,6 +124,7 @@ class SurveyEngine:
         if session:
             await session.stop()
             session.task.status = TaskStatus.STOPPED
+            save_task(session.task)
 
             # 取消异步任务
             if task_id in self._running_tasks:

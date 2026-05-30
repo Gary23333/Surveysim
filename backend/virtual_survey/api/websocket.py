@@ -1,7 +1,6 @@
 """WebSocket端点"""
 
 import asyncio
-import json
 from datetime import datetime
 from typing import Any, Dict, Set
 
@@ -67,6 +66,7 @@ class ConnectionManager:
 
 # 全局连接管理器
 ws_manager = ConnectionManager()
+engine.set_websocket_manager(ws_manager)
 
 
 @router.websocket("/ws/sessions/{session_id}")
@@ -89,8 +89,8 @@ async def websocket_endpoint(websocket: WebSocket, session_id: str):
             "data": status,
         })
 
-        # 设置引擎的websocket_manager
-        engine.websocket_manager = ws_manager
+        # 确保连接前已创建的会话也能广播实时消息
+        engine.set_websocket_manager(ws_manager)
 
         # 监听消息
         while True:
