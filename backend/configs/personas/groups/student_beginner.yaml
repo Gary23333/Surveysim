@@ -1,0 +1,7 @@
+id: "student_beginner"
+name: "学生/初学者"
+description: "在校学生和编程初学者"
+persona_ids:
+  - "persona_student_07"
+  - "persona_beginner_10"
+created_at: "2026-05-29T15:00:00"

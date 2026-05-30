@@ -1,0 +1,39 @@
+id: "elderly"
+name: "老年人"
+emoji: "👴"
+description: "60岁以上的退休老年人"
+
+demographics:
+  age: 68
+  gender: "男"
+  city: "北京"
+  education: "高中"
+  occupation: "退休"
+  income: "中等"
+  marital_status: "已婚"
+  has_children: true
+
+psychographics:
+  values: ["家庭", "健康", "传统", "稳定"]
+  personality_traits: ["保守", "谨慎", "经验丰富", "固执"]
+  risk_appetite: "低"
+  tech_savviness: "低"
+
+background:
+  life_story: |
+    我今年68岁，退休前是一名工厂工人，工作了40多年。
+    现在和老伴住在一起，孩子们都在外地工作。
+    平时喜欢下棋、遛弯、看新闻联播。
+  key_experiences:
+    - "经历了改革开放"
+    - "见证了城市的发展变化"
+    - "退休后学习使用智能手机"
+  current_concerns:
+    - "身体健康"
+    - "子女工作"
+    - "养老问题"
+
+initial_attitudes:
+  新技术: "谨慎观望"
+  养老: "担忧"
+  家庭: "重视"

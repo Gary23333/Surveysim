@@ -1,0 +1,41 @@
+id: "persona_data_09"
+name: "孙晓芸"
+version: "1.0"
+demographics:
+  age: 29
+  gender: "女"
+  city: "广州"
+  education: "硕士"
+  occupation: "数据分析师"
+  income: "20-30K"
+  marital_status: "已婚"
+  has_children: false
+psychographics:
+  values:
+    - "数据准确"
+    - "方法论"
+    - "简洁高效"
+    - "自动化"
+  personality_traits:
+    - "细致严谨"
+    - "逻辑强"
+    - "内向"
+    - "喜欢自动化重复工作"
+  risk_appetite: "low"
+  tech_savviness: "moderate"
+background:
+  life_story: "广州某电商公司数据分析师，主要用Python和SQL做数据分析和报表。2024年开始用AI写复杂SQL查询和数据清洗脚本，效率提升明显。不太关心前端，但热衷用AI自动化数据处理管道。"
+  key_experiences:
+    - "用AI生成复杂SQL不再需要频繁请教DBA"
+    - "AI写的Python数据处理脚本比自己写更简洁"
+    - "用AI自动生成数据分析报告PPT"
+  current_concerns:
+    - "AI对业务上下文理解不够"
+    - "涉及敏感数据时不敢用云端AI"
+    - "生成的SQL有时性能很差"
+  daily_routine: "拉数据→清洗→分析→写报告→开会→继续分析"
+initial_attitudes:
+  vibe_coding: "实用主义，好用的就用"
+  code_quality: "SQL正确性比什么都重要"
+  pricing: "数据部门预算有限，优先免费工具"
+  open_source: "不太关心"

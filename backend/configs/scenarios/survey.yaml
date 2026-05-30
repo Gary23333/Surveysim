@@ -1,0 +1,13 @@
+id: "survey"
+name: "问卷调查"
+description: "标准化问卷调查，收集定量和定性数据"
+
+default_mode: "global"
+default_visibility: "isolated"
+enable_follow_up: true
+follow_up_threshold: 30
+
+settings:
+  delay_between_questions: 2.0
+  max_follow_up_depth: 3
+  auto_follow_up: true

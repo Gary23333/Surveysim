@@ -1,0 +1,59 @@
+id: "market_research"
+name: "市场调研问卷"
+description: "了解市场需求和消费者行为"
+category: "市场调研"
+
+questions:
+  - id: "q1"
+    type: "open_ended"
+    text: "请描述您在选择产品时最看重的因素"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q2"
+    type: "multiple_choice"
+    text: "您通常通过哪些渠道了解新产品？"
+    options:
+      - "社交媒体"
+      - "朋友推荐"
+      - "广告"
+      - "搜索引擎"
+      - "线下体验"
+      - "专业评测"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q3"
+    type: "single_choice"
+    text: "您对价格的敏感度如何？"
+    options:
+      - "非常敏感，价格是首要考虑"
+      - "比较敏感，会比较性价比"
+      - "一般，更看重品质"
+      - "不太敏感，更看重品牌"
+      - "完全不敏感，只看喜好"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q4"
+    type: "open_ended"
+    text: "您认为当前市场上同类产品的主要痛点是什么？"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q5"
+    type: "ranking"
+    text: "请按重要性排序以下购买因素"
+    options:
+      - "价格"
+      - "质量"
+      - "品牌"
+      - "服务"
+      - "便利性"
+    required: true
+    mode: "global"
+    visibility: "isolated"

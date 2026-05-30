@@ -1,0 +1,65 @@
+id: "product_feedback"
+name: "产品反馈问卷"
+description: "收集用户对产品的反馈和建议"
+category: "产品研究"
+
+questions:
+  - id: "q1"
+    type: "single_choice"
+    text: "您使用我们产品多长时间了？"
+    options:
+      - "不到1个月"
+      - "1-3个月"
+      - "3-6个月"
+      - "6个月-1年"
+      - "超过1年"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q2"
+    type: "single_choice"
+    text: "您使用产品的频率如何？"
+    options:
+      - "每天"
+      - "每周几次"
+      - "每周一次"
+      - "每月几次"
+      - "很少使用"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q3"
+    type: "open_ended"
+    text: "您最喜欢产品的哪些功能？为什么？"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q4"
+    type: "open_ended"
+    text: "您在使用产品时遇到过哪些问题或困难？"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q5"
+    type: "open_ended"
+    text: "如果可以增加一个新功能，您希望是什么？"
+    required: true
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q6"
+    type: "scale"
+    text: "请为产品的易用性打分（1-5分）"
+    scale_config:
+      min_value: 1
+      max_value: 5
+      min_label: "非常难用"
+      max_label: "非常易用"
+      step: 1
+    required: true
+    mode: "global"
+    visibility: "isolated"

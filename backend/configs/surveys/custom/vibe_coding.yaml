@@ -1,0 +1,196 @@
+id: "vibe_coding"
+name: "Vibe Coding 工具使用调研"
+description: "深入了解AI编程辅助工具在各行业开发者中的使用情况、偏好及影响"
+version: "1.0"
+category: "技术调研"
+
+questions:
+  - id: "q1"
+    type: "single_choice"
+    text: "您目前是否使用AI编程辅助工具（如Cursor、Copilot、Windsurf等）？"
+    options:
+      - "是，经常使用"
+      - "是，偶尔使用"
+      - "否，但想尝试"
+      - "否，不感兴趣"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q2"
+    type: "multiple_choice"
+    text: "您使用过哪些AI编程工具？（多选）"
+    options:
+      - "Cursor"
+      - "GitHub Copilot"
+      - "Windsurf"
+      - "ChatGPT/Claude 对话式"
+      - "通义灵码"
+      - "Codeium"
+      - "Amazon Q Developer"
+      - "Cline / Roo Code"
+      - "其他"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q3"
+    type: "single_choice"
+    text: "您使用AI编程工具的频率是？"
+    options:
+      - "每天使用"
+      - "每周几次"
+      - "每周一次"
+      - "偶尔使用"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q4"
+    type: "multiple_choice"
+    text: "您主要用AI工具完成哪些编程任务？（多选）"
+    options:
+      - "代码自动补全"
+      - "新功能代码生成"
+      - "Bug 定位和修复"
+      - "代码审查 / Code Review"
+      - "测试用例编写"
+      - "文档注释生成"
+      - "学习新技术栈"
+      - "代码重构优化"
+      - "架构设计讨论"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q5"
+    type: "single_choice"
+    text: "与传统开发方式相比，AI工具提升了您多少工作效率？"
+    options:
+      - "提升超过 50%"
+      - "提升 30% - 50%"
+      - "提升 10% - 30%"
+      - "提升不到 10%"
+      - "反而降低了效率"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q6"
+    type: "open_ended"
+    text: "您对AI生成代码的信任程度如何？"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+    enable_text: true
+    enable_rating: true
+    rating_config:
+      min_value: 1
+      max_value: 10
+      min_label: "完全不信任"
+      max_label: "完全信任"
+
+  - id: "q7"
+    type: "open_ended"
+    text: "请描述一次您对AI编程工具最不满意的体验，具体是什么问题？"
+    required: false
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q8"
+    type: "single_choice"
+    text: "AI生成的代码在您项目代码总量中占比约是多少？"
+    options:
+      - "超过 80%"
+      - "50% - 80%"
+      - "20% - 50%"
+      - "20% 以下"
+      - "几乎不使用 AI 代码"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q9"
+    type: "multiple_choice"
+    text: "选择AI编程工具时，哪些因素对您最重要？（多选，限3项）"
+    options:
+      - "代码生成质量"
+      - "响应速度/延迟"
+      - "价格/性价比"
+      - "IDE 集成体验"
+      - "上下文理解能力"
+      - "多语言/框架支持"
+      - "数据隐私和安全性"
+      - "团队协作功能"
+      - "开源/可定制"
+      - "品牌和口碑"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q10"
+    type: "open_ended"
+    text: "如果有一个「理想中的」AI编程工具，它最应该具备什么能力是现在工具做不到的？"
+    required: false
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q11"
+    type: "single_choice"
+    text: "您是否担心AI编程工具带来的代码隐私和数据安全问题？"
+    options:
+      - "非常担心，这影响了我的使用"
+      - "有些担心，但仍在用"
+      - "不太担心"
+      - "完全不担心"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q12"
+    type: "open_ended"
+    text: "您认为AI编程工具对总体代码质量的影响是？"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+    enable_text: true
+    enable_rating: true
+    rating_config:
+      min_value: 1
+      max_value: 10
+      min_label: "显著降低代码质量"
+      max_label: "显著提高代码质量"
+
+  - id: "q13"
+    type: "single_choice"
+    text: "您每月愿意为AI编程工具支付多少费用？"
+    options:
+      - "只使用免费版"
+      - "10 - 30 元/月"
+      - "30 - 100 元/月"
+      - "100 - 300 元/月"
+      - "300 元以上/月"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+
+  - id: "q14"
+    type: "open_ended"
+    text: "您认为 AI 编程工具在未来 3 年内最大的变化会是什么？"
+    required: false
+    mode: "sequential"
+    visibility: "open"
+
+  - id: "q15"
+    type: "open_ended"
+    text: "您会向同事或朋友推荐使用 AI 编程工具吗？"
+    required: true
+    mode: "global"
+    visibility: "isolated"
+    enable_text: true
+    enable_rating: true
+    rating_config:
+      min_value: 1
+      max_value: 10
+      min_label: "绝对不愿意推荐"
+      max_label: "一定会强烈推荐"

@@ -1,0 +1,39 @@
+id: "tech_worker"
+name: "科技从业者"
+emoji: "💻"
+description: "在科技公司工作的技术人员"
+
+demographics:
+  age: 28
+  gender: "男"
+  city: "深圳"
+  education: "硕士"
+  occupation: "软件工程师"
+  income: "高"
+  marital_status: "未婚"
+  has_children: false
+
+psychographics:
+  values: ["技术", "效率", "创新", "理性"]
+  personality_traits: ["内向", "逻辑性强", "专注", "完美主义"]
+  risk_appetite: "中等"
+  tech_savviness: "极高"
+
+background:
+  life_story: |
+    我是一名软件工程师，在深圳一家互联网公司工作。
+    每天写代码、开会、加班，生活比较单调。
+    对新技术很感兴趣，业余时间会学习和折腾。
+  key_experiences:
+    - "参与过多个大型项目"
+    - "经历过996的工作节奏"
+    - "见证了AI技术的快速发展"
+  current_concerns:
+    - "技术更新换代"
+    - "职业天花板"
+    - "工作生活平衡"
+
+initial_attitudes:
+  AI技术: "深入理解"
+  工作: "热爱但疲惫"
+  消费: "理性"

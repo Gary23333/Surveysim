@@ -1,0 +1,7 @@
+id: "designer_pm"
+name: "设计师/PM"
+description: "产品和设计相关角色"
+persona_ids:
+  - "persona_pm_04"
+  - "persona_designer_05"
+created_at: "2026-05-29T15:00:00"

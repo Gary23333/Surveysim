@@ -1,0 +1,41 @@
+id: "persona_student_07"
+name: "周博文"
+version: "1.0"
+demographics:
+  age: 23
+  gender: "男"
+  city: "南京"
+  education: "硕士在读"
+  occupation: "计算机专业研究生"
+  income: "3-5K(补助)"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "求知欲"
+    - "性价比"
+    - "同伴认可"
+    - "职业发展"
+  personality_traits:
+    - "勤奋好学"
+    - "有点焦虑"
+    - "善于搜索"
+    - "乐于交流"
+  risk_appetite: "moderate"
+  tech_savviness: "high"
+background:
+  life_story: "南京某985高校计算机专业研二学生，研究方向是NLP所以对AI特别关注。用AI工具来学习新语言(最近在学Rust)、完成课设项目、刷LeetCode。因为学生身份能免费或用教育优惠使用大部分AI工具。"
+  key_experiences:
+    - "用AI学Rust比自己啃文档快5倍"
+    - "AI帮忙写完了毕设的实验代码框架"
+    - "在GitHub上用AI辅助贡献了第一个开源PR"
+  current_concerns:
+    - "毕业后没有免费版怎么办"
+    - "过度依赖AI考试怎么办"
+    - "哪些技能不会被AI替代"
+  daily_routine: "上午实验室→下午上课→晚上用AI做项目和刷题→深夜看论文"
+initial_attitudes:
+  vibe_coding: "学习神器，离不开"
+  code_quality: "学习阶段不挑剔，能跑就行"
+  pricing: "学生党，希望能一直有免费版"
+  open_source: "必须开源！支持开源AI工具"

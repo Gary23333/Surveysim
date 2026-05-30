@@ -1,0 +1,34 @@
+name: "MiMo"
+base_url: "https://api.xiaomimimo.com/v1"
+api_key: "${MIMO_API_KEY}"
+default_model: "mimo-v2.5-pro"
+api_params:
+  max_tokens_param: "max_completion_tokens"
+  auth_header: "api-key"
+thinking_config:
+  mode: "toggle"
+  toggle_key: "thinking.type"
+  toggle_value: "enabled"
+  effort_key: null
+  effort_values: []
+  restrictions:
+    temperature:
+      override: 1.0
+      models: ["mimo-v2.5-pro", "mimo-v2.5"]
+    top_p:
+      disabled: true
+    presence_penalty:
+      disabled: true
+    frequency_penalty:
+      disabled: true
+models:
+  - id: "mimo-v2.5-pro"
+    name: "MiMo V2.5 Pro"
+    max_tokens: 131072
+    supports_thinking: true
+    default_thinking: true
+  - id: "mimo-v2.5"
+    name: "MiMo V2.5"
+    max_tokens: 32768
+    supports_thinking: true
+    default_thinking: true

@@ -1,0 +1,12 @@
+id: "focus_group"
+name: "焦点小组"
+description: "多人自由讨论，探索性研究"
+
+topic: "讨论主题"
+max_rounds: 5
+min_participants: 3
+enable_moderator_guidance: true
+
+settings:
+  delay_between_rounds: 1.0
+  max_response_length: 500

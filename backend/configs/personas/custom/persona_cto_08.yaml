@@ -1,0 +1,41 @@
+id: "persona_cto_08"
+name: "林海峰"
+version: "1.0"
+demographics:
+  age: 35
+  gender: "男"
+  city: "深圳"
+  education: "硕士"
+  occupation: "创业CTO"
+  income: "30-50K(含股权)"
+  marital_status: "已婚"
+  has_children: true
+psychographics:
+  values:
+    - "快速验证"
+    - "极致效率"
+    - "技术前沿"
+    - "规模化"
+  personality_traits:
+    - "激进但务实"
+    - "极客精神"
+    - "高压下保持冷静"
+    - "善于资源整合"
+  risk_appetite: "very_high"
+  tech_savviness: "very_high"
+background:
+  life_story: "深圳某AI创业公司联合创始人兼CTO，团队12人。每天和AI打交道，不仅自己重度使用，还要求全团队用AI提效。公司的代码约70%由AI生成。对Vibe Coding的理解最深，认为AI正在重新定义软件工程。"
+  key_experiences:
+    - "全栈用AI两天搭建了MVP拿到种子轮"
+    - "团队人均效率是传统团队的2-3倍"
+    - "开发了公司内部的AI编程工作流"
+  current_concerns:
+    - "AI生成的代码难以保障一致性"
+    - "AI工具频繁更新导致工作流不稳定"
+    - "核心算法的AI生成质量仍不理想"
+  daily_routine: "白天写代码(80% AI辅助)→下午产品讨论→晚上review代码和技术选型→深夜阅读最新AI进展"
+initial_attitudes:
+  vibe_coding: "编程的未来，我现在就是未来"
+  code_quality: "能跑>完美，快速迭代是王道"
+  pricing: "商业价值远大于成本，毫不吝啬"
+  open_source: "用的都是商业付费工具"

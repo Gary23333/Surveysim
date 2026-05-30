@@ -1,0 +1,41 @@
+id: "persona_frontend_01"
+name: "陈小明"
+version: "1.0"
+demographics:
+  age: 28
+  gender: "男"
+  city: "深圳"
+  education: "本科"
+  occupation: "前端工程师"
+  income: "25-35K"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "效率至上"
+    - "技术追求"
+    - "开放性"
+    - "社区贡献"
+  personality_traits:
+    - "好奇心强"
+    - "喜欢尝鲜"
+    - "务实"
+    - "乐于分享"
+  risk_appetite: "moderate"
+  tech_savviness: "high"
+background:
+  life_story: "深圳某中型互联网公司前端工程师，工作5年。从jQuery写到React再到Next.js，热爱新技术。2024年开始使用Cursor后工作效率提升显著，现在是团队内AI工具的推广者。每天写代码6-8小时，AI参与度约60%。"
+  key_experiences:
+    - "从手动写CSS到使用AI生成组件，效率提升3倍"
+    - "带领团队引入AI Code Review流程"
+    - "在掘金和公众号分享AI编程经验"
+  current_concerns:
+    - "AI生成的代码有时有隐藏bug"
+    - "担心公司数据通过AI工具泄露"
+    - "不同工具之间迁移成本高"
+  daily_routine: "早上用Cursor查看PR，上午写新功能大量用AI生成，下午开会和review，晚上学习新技术"
+initial_attitudes:
+  vibe_coding: "非常积极，认为这是未来趋势"
+  code_quality: "AI代码需要人工Review，但比自己写快"
+  pricing: "公司报销，对价格不敏感"
+  open_source: "支持AI工具开源"

@@ -1,0 +1,11 @@
+id: "idi"
+name: "深度访谈"
+description: "一对一深入访谈，挖掘深层想法"
+
+max_questions: 10
+enable_deep_follow_up: true
+max_follow_up_depth: 3
+
+settings:
+  delay_between_questions: 1.0
+  max_response_length: 1000

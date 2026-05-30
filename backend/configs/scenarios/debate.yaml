@@ -1,0 +1,11 @@
+id: "debate"
+name: "辩论讨论"
+description: "正反方观点碰撞，分析不同立场"
+
+topic: "辩论主题"
+rounds: 3
+enable_summary: true
+
+settings:
+  delay_between_rounds: 1.0
+  max_response_length: 500

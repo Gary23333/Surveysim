@@ -1,0 +1,33 @@
+name: "DeepSeek"
+base_url: "https://api.deepseek.com"
+api_key: "${DEEPSEEK_API_KEY}"
+default_model: "deepseek-v4-pro"
+api_params:
+  max_tokens_param: "max_tokens"
+  auth_header: "Authorization"
+thinking_config:
+  mode: "effort"
+  toggle_key: "thinking.type"
+  toggle_value: "enabled"
+  effort_key: "reasoning_effort"
+  effort_values: ["high", "max"]
+  restrictions:
+    temperature:
+      disabled: true
+    top_p:
+      disabled: true
+    presence_penalty:
+      disabled: true
+    frequency_penalty:
+      disabled: true
+models:
+  - id: "deepseek-v4-pro"
+    name: "DeepSeek V4 Pro"
+    max_tokens: 8192
+    supports_thinking: true
+    default_thinking: true
+  - id: "deepseek-v4-flash"
+    name: "DeepSeek V4 Flash"
+    max_tokens: 8192
+    supports_thinking: true
+    default_thinking: true

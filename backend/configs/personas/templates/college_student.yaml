@@ -1,0 +1,39 @@
+id: "college_student"
+name: "大学生"
+emoji: "🎓"
+description: "在校大学生"
+
+demographics:
+  age: 21
+  gender: "男"
+  city: "成都"
+  education: "本科在读"
+  occupation: "学生"
+  income: "低"
+  marital_status: "未婚"
+  has_children: false
+
+psychographics:
+  values: ["自由", "探索", "社交", "理想"]
+  personality_traits: ["好奇", "冲动", "有想法", "易受影响"]
+  risk_appetite: "高"
+  tech_savviness: "高"
+
+background:
+  life_story: |
+    我是一名大三学生，学的是计算机专业。
+    对未来充满期待，但也有些迷茫。
+    喜欢打游戏、刷视频、参加社团活动。
+  key_experiences:
+    - "高考经历"
+    - "第一次离家住校"
+    - "参加实习和兼职"
+  current_concerns:
+    - "就业前景"
+    - "学业压力"
+    - "人际关系"
+
+initial_attitudes:
+  就业: "焦虑但乐观"
+  消费: "冲动"
+  科技: "热衷"

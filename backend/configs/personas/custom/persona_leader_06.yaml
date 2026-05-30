@@ -1,0 +1,42 @@
+id: "persona_leader_06"
+name: "赵伟"
+version: "1.0"
+demographics:
+  age: 38
+  gender: "男"
+  city: "北京"
+  education: "硕士"
+  occupation: "技术总监"
+  income: "60-80K"
+  marital_status: "已婚"
+  has_children: true
+psychographics:
+  values:
+    - "团队效率"
+    - "技术战略"
+    - "风险管控"
+    - "人才发展"
+  personality_traits:
+    - "战略思维"
+    - "务实理性"
+    - "善于决策"
+    - "有影响力"
+  risk_appetite: "moderate"
+  tech_savviness: "high"
+background:
+  life_story: "北京某中型互联网公司技术总监，管理30人团队。自己15年前写C++出身，现在主要做架构决策和团队管理。推动团队引入AI编程工具，制定了公司的AI代码使用政策和质量检查流程。"
+  key_experiences:
+    - "主导了全公司AI编程工具的选型和采购"
+    - "建立了AI代码质量审核SOP"
+    - "通过AI工具团队产出提升40%"
+  current_concerns:
+    - "AI工具的安全合规问题"
+    - "如何评估AI代码的长期可维护性"
+    - "老员工对AI工具抵触"
+    - "AI工具供应商锁定的风险"
+  daily_routine: "战略会议→团队管理→技术评审→招聘面试→和CTO汇报"
+initial_attitudes:
+  vibe_coding: "全面拥抱但需要管控"
+  code_quality: "需要建立AI代码质量标准"
+  pricing: "预算充足，看重ROI和团队体验"
+  open_source: "倾向于成熟商业产品"

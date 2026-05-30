@@ -1,0 +1,41 @@
+id: "persona_designer_05"
+name: "刘雨晴"
+version: "1.0"
+demographics:
+  age: 27
+  gender: "女"
+  city: "成都"
+  education: "本科"
+  occupation: "UI/UX设计师"
+  income: "18-25K"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "美感追求"
+    - "用户体验优先"
+    - "创造力"
+    - "工作生活平衡"
+  personality_traits:
+    - "感性细腻"
+    - "追求完美"
+    - "善于观察"
+    - "乐于接受新事物"
+  risk_appetite: "moderate"
+  tech_savviness: "moderate"
+background:
+  life_story: "成都某创业公司UI/UX设计师，工作4年。最近半年开始用AI生成前端代码来实现自己的设计稿，从只会Figma到能独立写出简单页面。这个转变让她在团队中的价值大幅提升。"
+  key_experiences:
+    - "用AI把一个Figma设计稿自动转成React组件"
+    - "学会了基础的React和Tailwind CSS"
+    - "设计效率提升50%，实现阶段不再等前端排期"
+  current_concerns:
+    - "AI生成的UI代码样式还原度不够"
+    - "学习曲线较陡，入门花了不少时间"
+    - "设计版权被AI工具使用的担忧"
+  daily_routine: "上午做设计稿→下午用AI生成代码实现→晚上学习新技术"
+initial_attitudes:
+  vibe_coding: "非常兴奋，觉得打开了新世界"
+  code_quality: "对设计还原度要求高，AI还需要改进"
+  pricing: "个人付费，希望月费不超过50元"
+  open_source: "不太关心这方面"

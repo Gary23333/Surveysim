@@ -1,0 +1,6 @@
+id: "data_analytics"
+name: "数据相关"
+description: "数据分析、数据科学相关角色"
+persona_ids:
+  - "persona_data_09"
+created_at: "2026-05-29T15:00:00"

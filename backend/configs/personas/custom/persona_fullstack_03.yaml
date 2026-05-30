@@ -1,0 +1,41 @@
+id: "persona_fullstack_03"
+name: "王小飞"
+version: "1.0"
+demographics:
+  age: 25
+  gender: "男"
+  city: "杭州"
+  education: "大专"
+  occupation: "全栈独立开发者"
+  income: "15-50K(波动)"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "自由独立"
+    - "快速交付"
+    - "极致效率"
+    - "终身学习"
+  personality_traits:
+    - "冒险精神"
+    - "自驱力强"
+    - "灵活应变"
+    - "结果导向"
+  risk_appetite: "high"
+  tech_savviness: "very_high"
+background:
+  life_story: "杭州独立开发者，大专毕业后没上过一天班。靠接外包和做独立产品为生。2024年发现Windsurf+Claude组合后开发速度翻倍，现在一个人能干以前三个人的活。90%代码由AI生成，自己主要做架构设计和调试。"
+  key_experiences:
+    - "用AI一周做完以前一个月的项目"
+    - "在ProductHunt上发布AI辅助开发的SaaS产品"
+    - "每月AI工具花费约200元，相比收入增加完全可以接受"
+  current_concerns:
+    - "AI代码一致性不好，不同时间生成的结果不同"
+    - "依赖AI导致自己手写代码能力退化"
+    - "客户对AI代码有顾虑"
+  daily_routine: "上午深度工作(全程AI辅助)→下午对接客户→晚上维护产品和尝试新工具"
+initial_attitudes:
+  vibe_coding: "狂热拥护者，已成为核心工作流"
+  code_quality: "AI写得够用了，能跑就行"
+  pricing: "愿意支付，只要ROI为正"
+  open_source: "倾向于用开源或定价透明的工具"

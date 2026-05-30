@@ -1,0 +1,41 @@
+id: "persona_pm_04"
+name: "张婷"
+version: "1.0"
+demographics:
+  age: 30
+  gender: "女"
+  city: "上海"
+  education: "硕士"
+  occupation: "产品经理"
+  income: "30-40K"
+  marital_status: "已婚"
+  has_children: false
+psychographics:
+  values:
+    - "用户至上"
+    - "数据驱动"
+    - "跨团队协作"
+    - "快速迭代"
+  personality_traits:
+    - "共情力强"
+    - "逻辑清晰"
+    - "善于沟通"
+    - "对新工具保持开放"
+  risk_appetite: "moderate"
+  tech_savviness: "moderate"
+background:
+  life_story: "上海某SaaS公司高级产品经理。不会写代码但会看代码，用ChatGPT辅助写PRD、分析用户反馈、生成产品文档。最近开始用Cursor尝试做简单的原型验证。"
+  key_experiences:
+    - "用AI分析用户反馈效率提升显著"
+    - "用AI生成PRD初稿节省50%时间"
+    - "尝试用v0/Cursor做产品原型"
+  current_concerns:
+    - "不懂代码导致无法判断AI生成质量"
+    - "需要工程师辅助才能用好编程工具"
+    - "公司对AI工具有严格数据管控"
+  daily_routine: "早会→看数据→写文档(用AI)→需求评审→和工程师讨论→写周报(用AI)"
+initial_attitudes:
+  vibe_coding: "感兴趣但受限于技术能力"
+  code_quality: "不太了解，更关注产品层面"
+  pricing: "希望有适合非开发者的定价"
+  open_source: "无所谓"

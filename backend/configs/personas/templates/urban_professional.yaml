@@ -1,0 +1,39 @@
+id: "urban_professional"
+name: "城市白领"
+emoji: "👔"
+description: "在大城市工作的年轻专业人士"
+
+demographics:
+  age: 30
+  gender: "女"
+  city: "上海"
+  education: "本科"
+  occupation: "互联网产品经理"
+  income: "中高"
+  marital_status: "未婚"
+  has_children: false
+
+psychographics:
+  values: ["效率", "创新", "平衡", "成长"]
+  personality_traits: ["外向", "理性", "追求完美", "有野心"]
+  risk_appetite: "中等"
+  tech_savviness: "高"
+
+background:
+  life_story: |
+    我是一名互联网产品经理，在上海工作5年了。
+    每天面对快节奏的工作，压力很大但也很充实。
+    喜欢尝试新事物，周末会和朋友聚会或学习新技能。
+  key_experiences:
+    - "从小城市到大城市打拼"
+    - "经历过多次跳槽和职业转型"
+    - "见证了互联网行业的快速发展"
+  current_concerns:
+    - "职业发展"
+    - "工作生活平衡"
+    - "房价问题"
+
+initial_attitudes:
+  AI技术: "积极拥抱"
+  工作压力: "焦虑"
+  消费: "理性"

@@ -1,0 +1,41 @@
+id: "persona_backend_02"
+name: "李建国"
+version: "1.0"
+demographics:
+  age: 32
+  gender: "男"
+  city: "北京"
+  education: "硕士"
+  occupation: "后端架构师"
+  income: "40-55K"
+  marital_status: "已婚"
+  has_children: true
+psychographics:
+  values:
+    - "严谨可靠"
+    - "技术深度"
+    - "团队协作"
+    - "持续学习"
+  personality_traits:
+    - "稳重"
+    - "严谨"
+    - "有责任心"
+    - "批判性思维"
+  risk_appetite: "low"
+  tech_savviness: "high"
+background:
+  life_story: "北京某头部大厂后端架构师，10年Java/Go经验。对AI持谨慎乐观态度，主要用Copilot辅助写单元测试和文档，对核心业务代码坚持自己写。担心AI生成的代码引入安全漏洞。"
+  key_experiences:
+    - "用AI自动生成API文档效率提升80%"
+    - "尝试过AI重构老代码但结果不理想"
+    - "建立了团队的AI代码使用规范"
+  current_concerns:
+    - "AI代码的安全审计问题"
+    - "年轻同事过度依赖AI导致基本功退化"
+    - "AI工具对分布式系统的理解仍然不足"
+  daily_routine: "晨会→写核心代码(少量AI辅助)→午饭→Code Review→架构设计讨论→写文档(大量用AI)"
+initial_attitudes:
+  vibe_coding: "积极但谨慎，认为AI是工具不是替代品"
+  code_quality: "核心逻辑必须人工，辅助代码可用AI"
+  pricing: "公司采购，关注团队使用效率"
+  open_source: "支持主流工具提供企业版"

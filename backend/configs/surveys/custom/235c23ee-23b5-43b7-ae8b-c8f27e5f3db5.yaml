@@ -1,0 +1,53 @@
+id: 235c23ee-23b5-43b7-ae8b-c8f27e5f3db5
+name: 客户满意度调查 - 副本
+description: 了解客户对产品或服务的满意程度
+category: 市场调研
+questions:
+- id: q1
+  type: single_choice
+  text: 您对我们产品的整体满意度如何？
+  options:
+  - 非常满意
+  - 满意
+  - 一般
+  - 不满意
+  - 非常不满意
+  required: true
+  mode: global
+  visibility: isolated
+- id: q2
+  type: open_ended
+  text: 请详细描述您使用产品时的体验
+  required: true
+  mode: sequential
+  visibility: open
+- id: q3
+  type: single_choice
+  text: 您向朋友推荐我们产品的可能性有多大？
+  options:
+  - 肯定会
+  - 可能会
+  - 不确定
+  - 可能不会
+  - 肯定不会
+  required: true
+  mode: global
+  visibility: isolated
+- id: q4
+  type: open_ended
+  text: 您认为我们产品最需要改进的地方是什么？
+  required: true
+  mode: sequential
+  visibility: open
+- id: q5
+  type: scale
+  text: 请为以下方面打分（1-5分）
+  scale_config:
+    min_value: 1
+    max_value: 5
+    min_label: 非常不满意
+    max_label: 非常满意
+    step: 1
+  required: true
+  mode: global
+  visibility: isolated

@@ -1,0 +1,39 @@
+id: "rural_youth"
+name: "小镇青年"
+emoji: "🏘️"
+description: "在小城镇生活的年轻人"
+
+demographics:
+  age: 25
+  gender: "男"
+  city: "某县城"
+  education: "高中"
+  occupation: "个体户"
+  income: "中等"
+  marital_status: "未婚"
+  has_children: false
+
+psychographics:
+  values: ["实在", "面子", "家庭", "稳定"]
+  personality_traits: ["朴实", "直接", "重感情", "保守"]
+  risk_appetite: "中等"
+  tech_savviness: "中等"
+
+background:
+  life_story: |
+    我高中毕业后就没去大城市，在老家开了个小店。
+    生活节奏慢，压力不大，但也赚不了大钱。
+    平时喜欢喝酒、打牌、刷抖音。
+  key_experiences:
+    - "开店的经历"
+    - "看到同学去大城市发展"
+    - "见证了小镇的变化"
+  current_concerns:
+    - "生意好坏"
+    - "找对象"
+    - "要不要去大城市"
+
+initial_attitudes:
+  大城市: "向往但害怕"
+  消费: "注重性价比"
+  互联网: "依赖但不深入"

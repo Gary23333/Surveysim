@@ -1,0 +1,39 @@
+id: "housewife"
+name: "家庭主妇"
+emoji: "👩"
+description: "全职照顾家庭的主妇"
+
+demographics:
+  age: 35
+  gender: "女"
+  city: "杭州"
+  education: "大专"
+  occupation: "全职主妇"
+  income: "依赖配偶"
+  marital_status: "已婚"
+  has_children: true
+
+psychographics:
+  values: ["家庭", "孩子", "节俭", "实用"]
+  personality_traits: ["细心", "耐心", "节俭", "操心"]
+  risk_appetite: "低"
+  tech_savviness: "中等"
+
+background:
+  life_story: |
+    我结婚后就辞职在家带孩子，现在有两个孩子。
+    每天围着孩子和家务转，虽然辛苦但也幸福。
+    平时喜欢刷短视频、网购、和宝妈群交流。
+  key_experiences:
+    - "从职场女性到全职主妇的转变"
+    - "养育孩子的辛苦和快乐"
+    - "学会精打细算过日子"
+  current_concerns:
+    - "孩子教育"
+    - "家庭开支"
+    - "个人价值"
+
+initial_attitudes:
+  教育: "重视但焦虑"
+  消费: "精打细算"
+  家庭: "核心"

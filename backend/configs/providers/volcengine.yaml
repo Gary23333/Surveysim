@@ -1,0 +1,31 @@
+name: "Volcengine"
+base_url: "https://ark.cn-beijing.volces.com/api/v3"
+api_key: "${VOLCENGINE_API_KEY}"
+default_model: "doubao-seed-2-0-pro-260215"
+api_params:
+  max_tokens_param: "max_tokens"
+  auth_header: "Authorization"
+thinking_config:
+  mode: "effort_only"
+  toggle_key: null
+  toggle_value: null
+  effort_key: "reasoning_effort"
+  effort_values: ["minimal", "low", "medium", "high"]
+  effort_off_value: "minimal"
+  restrictions: {}
+models:
+  - id: "doubao-seed-2-0-pro-260215"
+    name: "Doubao Seed 2.0 Pro"
+    max_tokens: 32768
+    supports_thinking: true
+    default_thinking: false
+  - id: "doubao-seed-2-0-lite-260428"
+    name: "Doubao Seed 2.0 Lite"
+    max_tokens: 32768
+    supports_thinking: true
+    default_thinking: false
+  - id: "doubao-seed-2-0-mini-260428"
+    name: "Doubao Seed 2.0 Mini"
+    max_tokens: 32768
+    supports_thinking: true
+    default_thinking: false

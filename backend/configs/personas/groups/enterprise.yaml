@@ -1,0 +1,10 @@
+id: "enterprise"
+name: "企业团队"
+description: "中大型企业的技术人员和管理者"
+persona_ids:
+  - "persona_frontend_01"
+  - "persona_backend_02"
+  - "persona_pm_04"
+  - "persona_leader_06"
+  - "persona_cto_08"
+created_at: "2026-05-29T15:00:00"

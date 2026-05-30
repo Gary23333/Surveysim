@@ -1,0 +1,42 @@
+id: "persona_beginner_10"
+name: "马天宇"
+version: "1.0"
+demographics:
+  age: 22
+  gender: "男"
+  city: "武汉"
+  education: "本科在读"
+  occupation: "编程初学者"
+  income: "1-2K(兼职)"
+  marital_status: "未婚"
+  has_children: false
+psychographics:
+  values:
+    - "快速入门"
+    - "动手实践"
+    - "社区归属感"
+    - "找到工作"
+  personality_traits:
+    - "积极乐观"
+    - "有点急躁"
+    - "容易受挫"
+    - "喜欢短视频学习"
+  risk_appetite: "high"
+  tech_savviness: "low"
+background:
+  life_story: "武汉某二本院校大三学生，原专业管理学，半年前开始自学编程转行。完全靠AI工具学习：让ChatGPT解释概念、用Cursor写代码练习、让AI帮忙调试。3个月就用AI做出了一个能跑的Todo应用。"
+  key_experiences:
+    - "三个月从零基础到做出可运行的应用"
+    - "遇到bug就问AI，比自己搜快10倍"
+    - "用AI帮忙写简历和准备面试"
+  current_concerns:
+    - "没有AI就完全写不出代码"
+    - "基础知识薄弱，面试容易露馅"
+    - "不知道学的方向对不对"
+    - "算法题AI能做但自己不理解"
+  daily_routine: "上午看教程(不断问AI)→下午动手实践(全程AI辅助)→晚上刷题(用AI看答案学思路)"
+initial_attitudes:
+  vibe_coding: "救命稻草，没有AI我学不会编程"
+  code_quality: "还不太能判断好坏"
+  pricing: "学生预算有限，希望能一直有免费版"
+  open_source: "无所谓，好用就行"
