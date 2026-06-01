@@ -54,14 +54,6 @@ export interface MemoryConfig {
   enable_attitude_tracking: boolean;
 }
 
-export interface ModeratorConfig {
-  type: "ai" | "human";
-  provider_pack?: string;
-  model?: string;
-  behavior_prompt_id: string;
-  human_name?: string;
-}
-
 export interface TaskSettings {
   default_visibility: Visibility;
   auto_follow_up: boolean;
@@ -222,6 +214,7 @@ export interface AgentResponseMessage extends WSMessage {
   emotion: string;
   emotion_intensity: number;
   timestamp: string;
+  score?: number;
 }
 
 export interface AgentStateMessage extends WSMessage {
@@ -243,10 +236,19 @@ export interface SystemEventMessage extends WSMessage {
 
 export interface ModeratorCommandMessage extends WSMessage {
   type: "moderator_command";
-  command: "ask_question" | "follow_up" | "skip" | "change_visibility" | "end";
+  command: "ask_question" | "follow_up" | "skip" | "change_visibility" | "end"
+    | "next_question" | "moderator_opening" | "moderator_guidance" | "moderator_summary" | "moderator_decision";
   target?: string;
   question?: string;
+  content?: string;
   visibility?: Visibility;
+  index?: number;
+}
+
+export interface ModeratorTakeoverMessage extends WSMessage {
+  type: "moderator_takeover";
+  action: "takeover" | "release";
+  human_name?: string;
 }
 
 // Provider types

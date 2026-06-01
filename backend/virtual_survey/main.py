@@ -68,7 +68,7 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Virtual Survey",
     description="大模型驱动的模拟问卷调查与群体调研平台",
-    version="0.2.0",
+    version="1.0.0",
     lifespan=lifespan,
     redirect_slashes=True,
 )
@@ -96,7 +96,7 @@ async def root():
     """根路径"""
     return {
         "name": "Virtual Survey",
-        "version": "0.2.0",
+        "version": "1.0.0",
         "description": "大模型驱动的模拟问卷调查与群体调研平台",
     }
 

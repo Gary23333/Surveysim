@@ -70,6 +70,31 @@ class Scenario(ABC):
         if hasattr(self.session, '_pause_event'):
             await self.session._pause_event.wait()
 
+    @property
+    def is_human_moderator(self) -> bool:
+        """当前是否为人类主持人模式"""
+        return (
+            hasattr(self.session, 'moderator_manager')
+            and self.session.moderator_manager is not None
+            and self.session.moderator_manager.current_type == "human"
+        )
+
+    async def wait_for_next_question(self) -> None:
+        """人工主持模式：等待人类推进到下一题"""
+        # 重置事件
+        self.session._next_question_event.clear()
+        # 广播等待指示
+        await self.session.broadcast({
+            "type": "system_event",
+            "event": "awaiting_moderator_input",
+            "data": {
+                "input_type": "next_question",
+                "current": self.current_question,
+                "total": len(self.session.survey.questions),
+            },
+        })
+        await self.session._next_question_event.wait()
+
     def stop(self) -> None:
         """停止场景"""
         self._stop_flag = True

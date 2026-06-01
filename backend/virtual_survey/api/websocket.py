@@ -131,24 +131,26 @@ async def handle_websocket_message(
     message_type = data.get("type")
 
     if message_type == "moderator_command":
-        # 主持人指令
+        # 主持人指令 — 统一由 session.handle_command 处理
+        # 也转发到 HumanModerator 队列（session 内部处理）
         await engine.handle_command(session_id, data)
 
     elif message_type == "moderator_takeover":
+        # 统一的 takeover/release 处理
         action = data.get("action")
         session = engine.sessions.get(session_id)
         if session and session.moderator_manager:
             if action == "takeover":
                 await session.moderator_manager.switch_to_human()
-                await engine.pause_task(session_id)  # 暂停AI自动流程
+                await engine.pause_task(session_id)
                 await ws_manager.broadcast(session_id, {
                     "type": "system_event",
                     "event": "moderator_switched",
-                    "data": {"type": "human", "name": data.get("human_name", "Human")},
+                    "data": {"type": "human", "name": data.get("human_name", "主持人")},
                 })
             elif action == "release":
                 await session.moderator_manager.switch_to_ai()
-                await engine.resume_task(session_id)  # 恢复AI自动流程
+                await engine.resume_task(session_id)
                 await ws_manager.broadcast(session_id, {
                     "type": "system_event",
                     "event": "moderator_switched",

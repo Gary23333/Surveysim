@@ -79,3 +79,9 @@ tmp/
 temp/
 *.tmp
 *.temp
+
+# SQLite
+*.db-journal
+
+# PEP 582
+__pypackages__/

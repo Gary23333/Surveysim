@@ -10,7 +10,7 @@ interface UseWebSocketOptions {
 
 export function useWebSocket({ sessionId, onMessage, onConnect, onDisconnect }: UseWebSocketOptions) {
   const wsRef = useRef<WebSocket | null>(null);
-  const { setConnected, handleMessage } = useWebSocketStore();
+  const { setConnected, handleMessage, connected } = useWebSocketStore();
   const reconnectTimeoutRef = useRef<NodeJS.Timeout>();
 
   const connect = useCallback(() => {
@@ -81,5 +81,5 @@ export function useWebSocket({ sessionId, onMessage, onConnect, onDisconnect }: 
     }
   }, []);
 
-  return { sendMessage, disconnect };
+  return { sendMessage, disconnect, connected };
 }

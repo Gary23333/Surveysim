@@ -1,6 +1,7 @@
 """会话管理"""
 
 import asyncio
+from datetime import datetime
 from typing import Any, Dict, List, Optional
 
 
@@ -12,7 +13,7 @@ class SurveyWrapper:
     @property
     def name(self):
         return self._data.get("name", "") if isinstance(self._data, dict) else getattr(self._data, 'name', "")
-    
+
     @property
     def questions(self) -> List[Any]:
         if isinstance(self._data, dict):
@@ -38,10 +39,10 @@ class SurveyQuestionWrapper:
 
 from ..llm.manager import provider_manager
 from ..llm.pack import pack_manager
-from ..models.scenario import AgentResponse, ScenarioResult
+from ..models.scenario import AgentResponse, QuestionResult, ScenarioResult
 from ..models.task import Task
 from .moderator import AIModerator
-from .moderator_manager import ModeratorManager
+from .moderator_manager import HumanModerator, ModeratorManager
 from .respondent import RespondentAgent
 from .scenarios import (
     DebateScenario,
@@ -78,6 +79,8 @@ class Session:
         self._pause_event = asyncio.Event()
         self._pause_event.set()  # 初始不暂停
         self._stop_flag = False
+        # 人工主持人模式下，等待人类推进到下一题
+        self._next_question_event = asyncio.Event()
 
     async def initialize_agents(self) -> None:
         """初始化所有Agent"""
@@ -119,7 +122,7 @@ class Session:
 
             self.agents[agent_config.id] = agent
 
-        # 初始化主持人（显式配置优先；未配置时 AI 主持人复用首个 Agent 的 provider_pack）
+        # 初始化主持人
         moderator_config = self.task.moderator
         ai_moderator = None
         first_agent_config = self.task.agents[0] if self.task.agents else None
@@ -131,7 +134,7 @@ class Session:
             ai_provider = provider_manager.get(provider_name) if provider_name else None
             if not ai_provider:
                 raise ValueError(f"Moderator provider '{provider_name}' not found")
-            
+
             pack = pack_manager.get_pack(provider_name)
             mtc = pack.thinking_config if pack else None
             mmtp = pack.max_tokens_param if pack else "max_tokens"
@@ -147,7 +150,17 @@ class Session:
                 max_tokens_param=mmtp,
             )
 
-        self.moderator_manager = ModeratorManager(ai_moderator) if ai_moderator else ModeratorManager()
+        # 创建人类主持人（带 WebSocket 管理器，用于广播等待事件）
+        human_moderator = HumanModerator(
+            websocket_manager=self.websocket_manager,
+            session_id=self.task.id,
+        )
+
+        self.moderator_manager = ModeratorManager(
+            ai_moderator=ai_moderator,
+            human_moderator=human_moderator,
+        )
+
         if moderator_config.type == "human":
             await self.moderator_manager.switch_to_human()
 
@@ -223,6 +236,21 @@ class Session:
 
         await self._pause_event.wait()
 
+    async def wait_for_next_question(self) -> None:
+        """人工主持人模式：等待人类推进到下一题"""
+        self._next_question_event.clear()
+        # 广播等待指示
+        await self.broadcast({
+            "type": "system_event",
+            "event": "awaiting_moderator_input",
+            "data": {
+                "input_type": "next_question",
+                "current": self.scenario.current_question if self.scenario else 0,
+                "total": len(self.survey.questions),
+            },
+        })
+        await self._next_question_event.wait()
+
     async def broadcast(self, message: Dict[str, Any]) -> None:
         """广播消息"""
         if self.websocket_manager:
@@ -248,10 +276,14 @@ class Session:
         })
 
     async def handle_command(self, command: Dict[str, Any]) -> None:
-        """处理主持人指令"""
+        """处理主持人指令（由 WebSocket 层调用）"""
         cmd_type = command.get("command")
 
         if cmd_type == "next_question":
+            # 触发场景推进到下一题
+            self._next_question_event.set()
+
+            # 如果场景未在运行（人工主持暂停中），直接执行该题
             questions = self.survey.questions
             idx = command.get("index", self.scenario.current_question if self.scenario else 0)
             if idx >= len(questions):
@@ -261,7 +293,8 @@ class Session:
             q_text = q.text if hasattr(q, 'text') else str(q)
             q_mode = q.mode if hasattr(q, 'mode') else "global"
 
-            self.scenario.current_question = idx
+            if self.scenario:
+                self.scenario.current_question = idx
             await self.broadcast_question_raw(idx, len(questions), q_text)
 
             # 并行触发所有Agent回答
@@ -270,10 +303,24 @@ class Session:
                 tasks.append(agent.respond(q_text, {"visibility": "open" if q_mode == "open" else "isolated"}))
             responses = await asyncio.gather(*tasks, return_exceptions=True)
             resp_count = 0
+            agent_responses = []
             for r in responses:
                 if isinstance(r, AgentResponse):
                     resp_count += 1
                     await self.broadcast_response(r)
+                    self._record_response(r)
+                    agent_responses.append(r)
+
+            # 记录到 scenario 的 question_results
+            if self.scenario and agent_responses:
+                from ..models.scenario import QuestionResult
+                qr = QuestionResult(
+                    question_id=q.id if hasattr(q, 'id') else str(idx),
+                    question_text=q_text,
+                    responses=agent_responses,
+                    follow_ups=[],
+                )
+                self.scenario.question_results.append(qr)
 
             await self.broadcast({
                 "type": "system_event", "event": "question_answered",
@@ -287,11 +334,13 @@ class Session:
                 for agent in self.agents.values():
                     response = await agent.respond(question, {"visibility": "open"})
                     await self.broadcast_response(response)
+                    self._record_response(response)
             else:
                 agent = self.agents.get(target)
                 if agent:
                     response = await agent.respond(question, {"visibility": "isolated"})
                     await self.broadcast_response(response)
+                    self._record_response(response)
 
         elif cmd_type == "follow_up":
             target = command.get("target")
@@ -300,19 +349,22 @@ class Session:
             if agent:
                 response = await agent.respond(question, {"visibility": "isolated", "is_follow_up": True})
                 await self.broadcast_response(response)
+                self._record_response(response)
 
         elif cmd_type == "change_visibility":
             visibility = command.get("visibility")
             self.task.settings.default_visibility = visibility
 
-        elif cmd_type == "moderator_takeover":
-            action = command.get("action")
-            if action == "takeover":
-                await self.moderator_manager.switch_to_human()
-                await self.broadcast({"type": "system_event", "event": "moderator_switched", "data": {"type": "human"}})
-            elif action == "release":
-                await self.moderator_manager.switch_to_ai()
-                await self.broadcast({"type": "system_event", "event": "moderator_switched", "data": {"type": "ai"}})
+        # moderator_opening / moderator_guidance / moderator_summary / moderator_decision
+        # 这些命令转发到 HumanModerator 的命令队列
+        elif cmd_type in ("moderator_opening", "moderator_guidance", "moderator_summary", "moderator_decision"):
+            if self.moderator_manager and self.moderator_manager.human_moderator:
+                await self.moderator_manager.human_moderator.send_command(command)
+
+    def _record_response(self, response: AgentResponse) -> None:
+        """将人工提问的回答记录到 scenario 数据中"""
+        if self.scenario:
+            self.scenario.responses.append(response)
 
     async def broadcast_question_raw(self, index: int, total: int, text: str) -> None:
         await self.broadcast({
@@ -346,6 +398,7 @@ class Session:
                 "current": self.scenario.current_question if self.scenario else 0,
                 "total": len(self.survey.questions),
             },
+            "moderator_type": self.moderator_manager.current_type if self.moderator_manager else "ai",
         }
 
     def get_results(self) -> Optional[Dict[str, Any]]:

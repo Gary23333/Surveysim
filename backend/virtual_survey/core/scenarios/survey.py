@@ -41,6 +41,13 @@ class SurveyScenario(Scenario):
 
             self.current_question = i
 
+            # 人工主持人模式：等待人类推进到下一题
+            if self.is_human_moderator:
+                await self.wait_for_next_question()
+                # 人工模式下，题目由 handle_command 的 next_question 驱动回答
+                # 跳过自动执行，只收集已有的回答
+                continue
+
             # 广播问题变更
             await self.broadcast_question(question, i, len(questions))
 
@@ -71,8 +78,9 @@ class SurveyScenario(Scenario):
             if delay > 0:
                 await asyncio.sleep(delay)
 
-        # 收集问卷体验反馈
-        await self._collect_feedback()
+        # 收集问卷体验反馈（AI 模式下自动收集）
+        if not self.is_human_moderator:
+            await self._collect_feedback()
 
         return self.get_result()
 

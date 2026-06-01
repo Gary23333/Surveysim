@@ -18,7 +18,7 @@ import {
   DialogFooter, DialogHeader, DialogTitle,
 } from "@/components/ui/dialog";
 import { ArrowLeft, ArrowRight, Brain, Check, FolderOpen, Plus, Trash2 } from "lucide-react";
-import type { ScenarioType, AgentConfig, TaskCreate, Survey, PersonaSummary, Provider, BehaviorPrompt, PersonaGroup } from "@/types";
+import type { ScenarioType, AgentConfig, TaskCreate, Survey, PersonaSummary, Provider, BehaviorPrompt, PersonaGroup, ModeratorConfig } from "@/types";
 import { behaviorPromptsApi } from "@/api/providers";
 
 const steps = [
@@ -41,6 +41,13 @@ export default function TaskCreatePage() {
   const [scenarioType, setScenarioType] = useState<ScenarioType>("survey");
   const [surveyId, setSurveyId] = useState("");
   const [agents, setAgents] = useState<AgentConfig[]>([]);
+
+  // 主持人配置
+  const [moderatorType, setModeratorType] = useState<"ai" | "human">("ai");
+  const [moderatorProvider, setModeratorProvider] = useState("");
+  const [moderatorModel, setModeratorModel] = useState("");
+  const [moderatorBehaviorPrompt, setModeratorBehaviorPrompt] = useState("neutral");
+  const [humanModeratorName, setHumanModeratorName] = useState("主持人");
 
   // 选项数据
   const [surveys, setSurveys] = useState<Survey[]>([]);
@@ -116,12 +123,22 @@ export default function TaskCreatePage() {
   const handleSubmit = async () => {
     setLoading(true);
     try {
+      const moderator: ModeratorConfig = moderatorType === "human"
+        ? { type: "human", behavior_prompt_id: "neutral", human_name: humanModeratorName }
+        : {
+            type: "ai",
+            provider_pack: moderatorProvider && moderatorProvider !== "__default" ? moderatorProvider : undefined,
+            model: moderatorModel || undefined,
+            behavior_prompt_id: moderatorBehaviorPrompt,
+          };
+
       const taskData: TaskCreate = {
         name,
         description,
         scenario_type: scenarioType,
         survey_id: surveyId,
         agents,
+        moderator,
       };
 
       const task = await createTask(taskData);
@@ -236,6 +253,104 @@ export default function TaskCreatePage() {
                     </div>
                   ))}
                 </RadioGroup>
+              </div>
+
+              {/* 主持人配置 */}
+              <div>
+                <Label>主持人类型</Label>
+                <RadioGroup
+                  value={moderatorType}
+                  onValueChange={(value: string) => setModeratorType(value as "ai" | "human")}
+                  className="grid grid-cols-2 gap-4 mt-2"
+                >
+                  <div>
+                    <RadioGroupItem value="ai" id="mod-ai" className="peer sr-only" />
+                    <Label
+                      htmlFor="mod-ai"
+                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                    >
+                      <span className="text-3xl mb-2">🤖</span>
+                      <span className="text-sm font-medium">AI 主持人</span>
+                      <span className="text-xs text-muted-foreground">自动引导、追问</span>
+                    </Label>
+                  </div>
+                  <div>
+                    <RadioGroupItem value="human" id="mod-human" className="peer sr-only" />
+                    <Label
+                      htmlFor="mod-human"
+                      className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                    >
+                      <span className="text-3xl mb-2">🧑‍💼</span>
+                      <span className="text-sm font-medium">人工主持人</span>
+                      <span className="text-xs text-muted-foreground">全程手动控制</span>
+                    </Label>
+                  </div>
+                </RadioGroup>
+
+                {/* AI 主持人配置 */}
+                {moderatorType === "ai" && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <p className="text-xs text-gray-500">AI 主持人配置（可选，未配置时自动复用第一个参与者的 LLM）</p>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <Label className="text-xs">LLM 配置</Label>
+                        <Select
+                          value={moderatorProvider}
+                          onValueChange={(v) => { setModeratorProvider(v); setModeratorModel(""); }}
+                        >
+                          <SelectTrigger><SelectValue placeholder="默认" /></SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="__default">默认（复用参与者）</SelectItem>
+                            {providers.map((p) => (
+                              <SelectItem key={p.name} value={p.name}>{p.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs">模型</Label>
+                        <Select
+                          value={moderatorModel}
+                          onValueChange={setModeratorModel}
+                        >
+                          <SelectTrigger><SelectValue placeholder="默认" /></SelectTrigger>
+                          <SelectContent>
+                            {(providers.find((p) => p.name === moderatorProvider)?.models || []).map((m) => (
+                              <SelectItem key={m.id} value={m.id}>{m.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                      <div>
+                        <Label className="text-xs">行为模式</Label>
+                        <Select value={moderatorBehaviorPrompt} onValueChange={setModeratorBehaviorPrompt}>
+                          <SelectTrigger><SelectValue /></SelectTrigger>
+                          <SelectContent>
+                            {behaviorPrompts.map((bp) => (
+                              <SelectItem key={bp.id} value={bp.id}>{bp.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* 人工主持人配置 */}
+                {moderatorType === "human" && (
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg space-y-3">
+                    <p className="text-xs text-gray-500">人工主持人配置</p>
+                    <div>
+                      <Label className="text-xs">主持人名称</Label>
+                      <Input
+                        value={humanModeratorName}
+                        onChange={(e) => setHumanModeratorName(e.target.value)}
+                        placeholder="主持人"
+                        className="w-48"
+                      />
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -484,6 +599,15 @@ export default function TaskCreatePage() {
                       <div className="flex justify-between">
                         <dt className="text-gray-500">场景类型</dt>
                         <dd>{scenarioType}</dd>
+                      </div>
+                      <div className="flex justify-between">
+                        <dt className="text-gray-500">主持人</dt>
+                        <dd>
+                          {moderatorType === "ai" ? "🤖 AI 主持人" : `🧑‍💼 ${humanModeratorName}`}
+                          {moderatorType === "ai" && moderatorProvider && moderatorProvider !== "__default" && (
+                            <span className="text-xs text-gray-400 ml-2">({moderatorProvider})</span>
+                          )}
+                        </dd>
                       </div>
                     </dl>
                   </CardContent>
