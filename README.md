@@ -7,7 +7,7 @@
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg?style=for-the-badge&logo=python)](https://www.python.org/)
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.104+-009688.svg?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 [![React](https://img.shields.io/badge/React-18-61DAFB.svg?style=for-the-badge&logo=react)](https://reactjs.org/)
-[![Version](https://img.shields.io/badge/Version-1.0.0-green.svg?style=for-the-badge)](CHANGELOG.md)
+[![Version](https://img.shields.io/badge/Version-1.1.0-green.svg?style=for-the-badge)](CHANGELOG.md)
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
 
 <p align="center">
@@ -135,6 +135,14 @@ SurveySim 不只是问卷工具，更是一个完整的**虚拟调研实验室**
 - 🔌 **连通性测试**：一键测试 API 连接，实时返回延迟和状态
 - 🔍 **模型检测**：自动拉取供应商可用模型列表，一键导入
 - 🎛️ **任务级控制**：每个 Agent 独立配置思考开关和强度
+
+### 🆕 v1.1.0 更新
+
+- 📋 **问卷场景类型**：问卷管理支持设置场景类型（survey/focus_group/idi/debate），根据场景特点制定不同问卷
+- 🎯 **人格精准优化**：LLM 优化按钮移至每个人格卡片，支持基于已有人格进行针对性优化调整
+- 🤖 **AI 逐题总结**：结果页新增"AI 分析每题"功能，大模型自动对每题所有回答进行综合分析
+
+---
 
 ### 👥 人格分组管理
 
@@ -421,6 +429,9 @@ DEBUG=true
 - [x] ⭐ 题目评分系统
 - [x] 📊 结果可视化 & 导出
 - [x] 🎤 人工主持人全程控制
+- [x] 📋 问卷场景类型管理 (v1.1.0)
+- [x] 🎯 人格精准优化 (v1.1.0)
+- [x] 🤖 AI 逐题总结 (v1.1.0)
 
 ### 📋 计划中
 
