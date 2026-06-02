@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-import { ChevronDown, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronRight, Sparkles } from "lucide-react";
 import type { QuestionResult } from "@/types";
 
 const emotionEmojis: Record<string, string> = {
@@ -34,6 +34,15 @@ export default function QuestionResultCard({ qr, index }: Props) {
       </button>
       {expanded && (
         <div className="divide-y">
+          {qr.ai_summary && (
+            <div className="px-4 py-3 bg-blue-50/70 border-b border-blue-100">
+              <div className="flex items-center gap-1.5 mb-2">
+                <Sparkles className="w-3.5 h-3.5 text-blue-500" />
+                <span className="text-xs font-semibold text-blue-600">AI 总结</span>
+              </div>
+              <p className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{qr.ai_summary}</p>
+            </div>
+          )}
           {qr.responses.map((resp, i) => (
             <div key={i} className="px-4 py-3">
               <div className="flex items-center gap-2 mb-1">

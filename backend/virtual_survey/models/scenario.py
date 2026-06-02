@@ -82,6 +82,7 @@ class QuestionResult(BaseModel):
     question_text: str = Field(..., description="问题文本")
     responses: List[AgentResponse] = Field(default_factory=list, description="回答列表")
     follow_ups: List[FollowUpResult] = Field(default_factory=list, description="追问列表")
+    ai_summary: Optional[str] = Field(default=None, description="AI 总结")
 
 
 class ScenarioResult(BaseModel):

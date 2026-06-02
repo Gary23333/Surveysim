@@ -4,6 +4,7 @@ import httpx
 
 from fastapi import APIRouter, HTTPException
 
+from ..llm.manager import provider_manager
 from ..llm.pack import ProviderPack, pack_manager
 from ..storage.config_store import provider_store
 
@@ -12,8 +13,12 @@ router = APIRouter(prefix="/api/v1/providers", tags=["providers"])
 
 @router.get("/")
 async def list_providers():
-    """获取Provider列表"""
+    """获取Provider列表（带配置状态标记）"""
     providers = provider_store.list_providers()
+    # 为每个 provider 附加 configured 状态
+    for p in providers:
+        name = p.get("name", "")
+        p["configured"] = provider_manager.has_provider(name)
     return providers
 
 
@@ -24,6 +29,7 @@ async def get_provider(provider_name: str):
     if not provider:
         raise HTTPException(status_code=404, detail="Provider not found")
 
+    provider["configured"] = provider_manager.has_provider(provider_name)
     return provider
 
 
@@ -44,6 +50,9 @@ async def create_provider(provider_data: dict):
     # 加载到pack_manager
     pack = ProviderPack.from_dict(provider_data)
     pack_manager.add_pack(pack)
+
+    # 如果有 API Key，注册到 provider_manager
+    _try_register_provider(pack)
 
     return {"message": "Provider created", "name": name}
 
@@ -67,6 +76,9 @@ async def update_provider(provider_name: str, provider_data: dict):
     # 更新pack_manager
     pack = ProviderPack.from_dict(provider_data)
     pack_manager.add_pack(pack)
+
+    # 重新注册到 provider_manager
+    _try_register_provider(pack)
 
     return {"message": "Provider updated", "name": provider_name}
 
@@ -122,6 +134,9 @@ async def test_provider_connection(provider_name: str):
         pack = ProviderPack.from_dict(provider)
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid configuration: {str(e)}")
+
+    if not pack.api_key:
+        return {"success": False, "error": "API Key 未配置，请先在供应商配置中填入 API Key"}
 
     headers = {"Content-Type": "application/json"}
     if pack.auth_header == "api-key":
@@ -182,6 +197,9 @@ async def detect_models(provider_name: str):
     except Exception as e:
         raise HTTPException(status_code=400, detail=f"Invalid configuration: {str(e)}")
 
+    if not pack.api_key:
+        return {"success": False, "error": "API Key 未配置"}
+
     headers = {"Content-Type": "application/json"}
     if pack.auth_header == "api-key":
         headers["api-key"] = pack.api_key
@@ -219,3 +237,16 @@ async def detect_models(provider_name: str):
             "success": False,
             "error": str(e)[:500],
         }
+
+
+def _try_register_provider(pack: ProviderPack) -> None:
+    """尝试注册 provider 到 provider_manager（如果有 API Key）"""
+    if not pack.api_key:
+        return
+    from ..llm.adapters.openai import OpenAIProvider
+    provider = OpenAIProvider(
+        api_key=pack.api_key,
+        base_url=pack.base_url,
+        auth_header=pack.auth_header,
+    )
+    provider_manager.register(pack.name, provider)

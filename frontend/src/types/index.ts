@@ -75,12 +75,14 @@ export interface Survey {
   version: string;
   question_count?: number;
   questions?: Question[];
+  scenario_type?: ScenarioType;
 }
 
 export interface SurveyCreate {
   name: string;
   description?: string;
   questions?: Question[];
+  scenario_type?: ScenarioType;
 }
 
 export interface SurveyTemplate {
@@ -89,6 +91,7 @@ export interface SurveyTemplate {
   description: string;
   category: string;
   questions: Question[];
+  scenario_type?: ScenarioType;
 }
 
 export interface Question {
@@ -259,6 +262,7 @@ export interface Provider {
   models: ModelInfo[];
   api_params?: Record<string, any>;
   thinking_config?: ThinkingConfig;
+  configured?: boolean;
 }
 
 export interface ThinkingConfig {
@@ -352,6 +356,7 @@ export interface QuestionResult {
   question_text: string;
   responses: ResponseItem[];
   follow_ups: FollowUpItem[];
+  ai_summary?: string;
 }
 
 export interface ResponseItem {

@@ -39,6 +39,11 @@ ENV/
 .env.local
 .env.*.local
 
+# User data (custom personas, surveys, etc.)
+backend/configs/personas/custom/
+backend/configs/surveys/custom/
+backend/data/
+
 # Database
 *.db
 *.sqlite

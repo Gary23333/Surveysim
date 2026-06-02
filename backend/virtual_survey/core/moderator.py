@@ -222,3 +222,40 @@ class AIModerator:
             self.model,
             **self._chat_kwargs(0.5),
         )
+
+    async def generate_question_summary(
+        self,
+        question_text: str,
+        responses: List[AgentResponse],
+    ) -> str:
+        """为单个问题的所有回答生成 AI 总结"""
+        response_lines = []
+        for r in responses:
+            content_preview = r.content[:200] + "..." if len(r.content) > 200 else r.content
+            response_lines.append(
+                f"- {r.agent_name}（情绪：{r.emotion}，评分：{r.score or '无'}）：{content_preview}"
+            )
+
+        responses_text = "\n".join(response_lines) if response_lines else "暂无回答"
+
+        prompt = f"""你是一位专业的调研分析师。请对以下问题的所有回答进行总结分析。
+
+问题：{question_text}
+
+参与者的回答：
+{responses_text}
+
+要求：
+1. 总结主要观点和共性（1-2句）
+2. 指出分歧和不同立场（如有，1句）
+3. 提炼关键洞察或意外发现（1句）
+4. 不超过200字
+5. 使用客观、专业的语言
+
+请直接输出总结内容，不需要JSON格式。"""
+
+        return await self.provider.chat(
+            [{"role": "user", "content": prompt}],
+            self.model,
+            **self._chat_kwargs(0.5),
+        )

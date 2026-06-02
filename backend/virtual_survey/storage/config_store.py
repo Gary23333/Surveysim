@@ -32,8 +32,23 @@ class ConfigStore:
     def write_yaml(self, file_path: Path, data: Dict[str, Any]) -> None:
         """写入YAML文件"""
         file_path.parent.mkdir(parents=True, exist_ok=True)
+        # 递归转换为纯 Python 类型，避免 !!python/object 标签
+        cleaned = self._to_safe(data)
         with open(file_path, "w", encoding="utf-8") as f:
-            yaml.dump(data, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+            yaml.safe_dump(cleaned, f, default_flow_style=False, allow_unicode=True, sort_keys=False)
+
+    @staticmethod
+    def _to_safe(obj: Any) -> Any:
+        """递归转换 Pydantic/enum 对象为纯 Python 类型"""
+        if isinstance(obj, dict):
+            return {k: ConfigStore._to_safe(v) for k, v in obj.items()}
+        if isinstance(obj, list):
+            return [ConfigStore._to_safe(v) for v in obj]
+        if hasattr(obj, 'value'):  # Enum
+            return obj.value
+        if hasattr(obj, 'dict'):   # Pydantic model
+            return ConfigStore._to_safe(obj.dict())
+        return obj
 
     def delete_yaml(self, file_path: Path) -> bool:
         """删除YAML文件"""

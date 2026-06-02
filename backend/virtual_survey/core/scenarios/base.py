@@ -29,10 +29,11 @@ class Scenario(ABC):
         """执行场景，返回结果"""
         pass
 
-    @abstractmethod
     async def execute_question(self, question: Any, **kwargs) -> List[AgentResponse]:
-        """执行单个问题"""
-        pass
+        """执行单个问题（子类按需重写）"""
+        raise NotImplementedError(
+            f"{self.__class__.__name__} does not support execute_question"
+        )
 
     async def broadcast_response(self, response: AgentResponse) -> None:
         """广播回答"""

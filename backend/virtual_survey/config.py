@@ -18,9 +18,10 @@ class Settings(BaseSettings):
     # 数据库配置
     DATABASE_URL: str = "sqlite:///./data/surveysim.db"
 
-    # LLM配置
-    OPENAI_API_KEY: Optional[str] = None
-    OPENAI_BASE_URL: str = "https://api.openai.com/v1"
+    # LLM配置（供应商 API Key）
+    MIMO_API_KEY: Optional[str] = None
+    DEEPSEEK_API_KEY: Optional[str] = None
+    VOLCENGINE_API_KEY: Optional[str] = None
 
     # 路径配置
     BASE_DIR: Path = Path(__file__).parent.parent

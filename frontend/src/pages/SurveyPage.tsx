@@ -8,13 +8,18 @@ import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Plus, Edit, Trash2, Download, Upload, FileText, FileDown } from "lucide-react";
-import type { Survey, SurveyTemplate } from "@/types";
+import type { Survey, SurveyTemplate, ScenarioType } from "@/types";
 
 const QUESTION_TYPES: Record<string, string> = {
   single_choice: "单选题", multiple_choice: "多选题", open_ended: "开放题", scale: "量表", ranking: "排序",
 };
 const MODES: Record<string, string> = { global: "全局", sequential: "顺序", open: "开放" };
+
+const scenarioLabels: Record<string, string> = {
+  survey: "问卷调查", focus_group: "焦点小组", idi: "深度访谈", debate: "辩论讨论",
+};
 
 const TEMPLATE_JSON = {
   name: "示例问卷",
@@ -37,6 +42,7 @@ export default function SurveyPage() {
   const [description, setDescription] = useState("");
   const [questions, setQuestions] = useState<any[]>([]);
   const [saving, setSaving] = useState(false);
+  const [scenarioType, setScenarioType] = useState<ScenarioType>("survey");
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => { loadData(); }, []);
@@ -50,12 +56,13 @@ export default function SurveyPage() {
     finally { setLoading(false); }
   };
 
-  const handleCreate = () => { setEditingSurvey(null); setName(""); setDescription(""); setQuestions([]); setShowEditor(true); };
+  const handleCreate = () => { setEditingSurvey(null); setName(""); setDescription(""); setQuestions([]); setScenarioType("survey"); setShowEditor(true); };
   const handleEdit = async (survey: Survey) => {
     try {
       const detail = await surveysApi.get(survey.id);
       setEditingSurvey(detail); setName(detail.name); setDescription(detail.description);
       setQuestions((detail.questions || []).map((q: any) => ({ ...q })));
+      setScenarioType((detail as any).scenario_type || "survey");
       setShowEditor(true);
     } catch (error) { console.error("Failed to load detail:", error); }
   };
@@ -63,8 +70,8 @@ export default function SurveyPage() {
     if (!name.trim()) return;
     setSaving(true);
     try {
-      if (editingSurvey) await surveysApi.update(editingSurvey.id, { name, description, questions } as any);
-      else await surveysApi.create({ name, description, questions } as any);
+      if (editingSurvey) await surveysApi.update(editingSurvey.id, { name, description, questions, scenario_type: scenarioType } as any);
+      else await surveysApi.create({ name, description, questions, scenario_type: scenarioType } as any);
       setShowEditor(false); loadData();
     } catch (error) { console.error("Failed to save:", error); }
     finally { setSaving(false); }
@@ -166,7 +173,10 @@ export default function SurveyPage() {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between">
                     <div>
-                      <h4 className="font-semibold text-lg">{s.name}</h4>
+                      <h4 className="font-semibold text-lg">
+                        {s.name}
+                        <Badge variant="outline" className="text-xs ml-2">{scenarioLabels[(s as any).scenario_type || "survey"] || "问卷调查"}</Badge>
+                      </h4>
                       <p className="text-gray-500 mt-1">{s.description}</p>
                       <p className="text-sm text-gray-400 mt-2">{s.question_count ?? 0} 个问题 · 版本 {s.version}</p>
                     </div>
@@ -192,6 +202,35 @@ export default function SurveyPage() {
               <div className="grid grid-cols-2 gap-3">
                 <div><Label>问卷名称 *</Label><Input value={name} onChange={e => setName(e.target.value)} placeholder="问卷名称" /></div>
                 <div><Label>描述</Label><Input value={description} onChange={e => setDescription(e.target.value)} placeholder="简要描述" /></div>
+              </div>
+
+              {/* Scenario type selector */}
+              <div>
+                <Label>场景类型</Label>
+                <RadioGroup
+                  value={scenarioType}
+                  onValueChange={(value: string) => setScenarioType(value as ScenarioType)}
+                  className="grid grid-cols-2 gap-3 mt-2"
+                >
+                  {[
+                    { value: "survey", label: "问卷调查", emoji: "📋", desc: "标准化问题收集" },
+                    { value: "focus_group", label: "焦点小组", emoji: "👥", desc: "多人自由讨论" },
+                    { value: "idi", label: "深度访谈", emoji: "🎙️", desc: "一对一深入挖掘" },
+                    { value: "debate", label: "辩论讨论", emoji: "⚖️", desc: "正反方观点碰撞" },
+                  ].map((item) => (
+                    <div key={item.value}>
+                      <RadioGroupItem value={item.value} id={`sc-${item.value}`} className="peer sr-only" />
+                      <Label
+                        htmlFor={`sc-${item.value}`}
+                        className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-3 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+                      >
+                        <span className="text-2xl mb-1">{item.emoji}</span>
+                        <span className="text-sm font-medium">{item.label}</span>
+                        <span className="text-xs text-muted-foreground">{item.desc}</span>
+                      </Label>
+                    </div>
+                  ))}
+                </RadioGroup>
               </div>
 
               {/* Question editor */}

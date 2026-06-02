@@ -1,11 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useTaskStore } from "@/stores/taskStore";
 import { tasksApi } from "@/api/tasks";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Download } from "lucide-react";
+import { ArrowLeft, Download, Sparkles } from "lucide-react";
 import StatsOverview, { EmotionChart, ScaleScorePanel, SurveyFeedbackPanel } from "@/components/results/StatsOverview";
 import QuestionResultCard from "@/components/results/QuestionResultCard";
 
@@ -19,6 +19,7 @@ const scenarioEmojis: Record<string, string> = {
 export default function ResultPage() {
   const { taskId } = useParams<{ taskId: string }>();
   const { results, currentTask, loading, fetchTask, fetchResults } = useTaskStore();
+  const [summarizing, setSummarizing] = useState(false);
 
   useEffect(() => {
     if (taskId) { fetchTask(taskId); fetchResults(taskId); }
@@ -42,6 +43,21 @@ export default function ResultPage() {
         URL.revokeObjectURL(url);
       }
     } catch (error) { console.error("Export failed:", error); }
+  };
+
+  const handleGenerateSummaries = async () => {
+    if (!taskId || summarizing) return;
+    setSummarizing(true);
+    try {
+      const result = await tasksApi.generateSummaries(taskId);
+      if (result.summaries) {
+        useTaskStore.getState().applySummaries(result.summaries);
+      }
+    } catch (error) {
+      console.error("Failed to generate summaries:", error);
+    } finally {
+      setSummarizing(false);
+    }
   };
 
   const r = results;
@@ -141,9 +157,15 @@ export default function ResultPage() {
 
           {/* Question results */}
           <div>
-            <h3 className="font-semibold text-sm text-gray-600 mb-3">
-              逐题结果（{r.question_results?.length || 0} 题）
-            </h3>
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="font-semibold text-sm text-gray-600">
+                逐题结果（{r.question_results?.length || 0} 题）
+              </h3>
+              <Button size="sm" variant="outline" onClick={handleGenerateSummaries} disabled={summarizing}>
+                <Sparkles className="w-3 h-3 mr-1" />
+                {summarizing ? "分析中..." : "AI 分析每题"}
+              </Button>
+            </div>
             <div className="space-y-3">
               {r.question_results?.map((qr, i) => (
                 <QuestionResultCard key={qr.question_id} qr={qr} index={i} />

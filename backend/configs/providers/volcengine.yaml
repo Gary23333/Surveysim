@@ -16,16 +16,16 @@ thinking_config:
 models:
   - id: "doubao-seed-2-0-pro-260215"
     name: "Doubao Seed 2.0 Pro"
-    max_tokens: 32768
+    max_tokens: 131072
     supports_thinking: true
     default_thinking: false
   - id: "doubao-seed-2-0-lite-260428"
     name: "Doubao Seed 2.0 Lite"
-    max_tokens: 32768
+    max_tokens: 131072
     supports_thinking: true
     default_thinking: false
   - id: "doubao-seed-2-0-mini-260428"
     name: "Doubao Seed 2.0 Mini"
-    max_tokens: 32768
+    max_tokens: 131072
     supports_thinking: true
     default_thinking: false

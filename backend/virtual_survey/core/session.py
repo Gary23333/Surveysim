@@ -88,7 +88,10 @@ class Session:
             # 获取Provider
             provider = provider_manager.get(agent_config.provider_pack)
             if not provider:
-                raise ValueError(f"Provider '{agent_config.provider_pack}' not found")
+                raise ValueError(
+                    f"LLM 供应商 '{agent_config.provider_pack}' 未配置。"
+                    f"请先在「供应商配置」页面填写 API Key。"
+                )
 
             # 获取Pack配置
             pack = pack_manager.get_pack(agent_config.provider_pack)
@@ -463,6 +466,7 @@ class Session:
                         }
                         for fu in qr.follow_ups
                     ],
+                    "ai_summary": getattr(qr, "ai_summary", None),
                 }
                 for qr in self.results.question_results
             ],

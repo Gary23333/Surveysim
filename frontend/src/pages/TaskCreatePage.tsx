@@ -4,6 +4,7 @@ import { useTaskStore } from "@/stores/taskStore";
 import { surveysApi } from "@/api/surveys";
 import { personasApi } from "@/api/personas";
 import { providersApi } from "@/api/providers";
+import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -31,9 +32,11 @@ const steps = [
 export default function TaskCreatePage() {
   const navigate = useNavigate();
   const { createTask } = useTaskStore();
+  const { toast } = useToast();
 
   const [currentStep, setCurrentStep] = useState(0);
   const [loading, setLoading] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
 
   // 表单数据
   const [name, setName] = useState("");
@@ -56,12 +59,17 @@ export default function TaskCreatePage() {
   const [behaviorPrompts, setBehaviorPrompts] = useState<BehaviorPrompt[]>([]);
   const [personaGroups, setPersonaGroups] = useState<PersonaGroup[]>([]);
   const [showGroupImport, setShowGroupImport] = useState(false);
+  const [dataLoading, setDataLoading] = useState(true);
+
+  // 获取第一个已配置的供应商（有 API Key 的）
+  const getConfiguredProvider = () => providers.find(p => p.configured) || providers[0];
 
   useEffect(() => {
     loadData();
   }, []);
 
   const loadData = async () => {
+    setDataLoading(true);
     try {
       const [surveysData, personasData, providersData, promptsData, groupsData] = await Promise.all([
         surveysApi.list(),
@@ -77,16 +85,20 @@ export default function TaskCreatePage() {
       setPersonaGroups(groupsData);
     } catch (error) {
       console.error("Failed to load data:", error);
+      toast({ title: "数据加载失败", description: "请刷新页面重试", variant: "destructive" });
+    } finally {
+      setDataLoading(false);
     }
   };
 
   const addAgent = () => {
+    const defaultProvider = getConfiguredProvider();
     const newAgent: AgentConfig = {
       id: `agent_${Date.now()}`,
       name: `参与者 ${agents.length + 1}`,
       persona_id: "",
-      provider_pack: providers[0]?.name || "",
-      model: providers[0]?.models[0]?.id || "",
+      provider_pack: defaultProvider?.name || "",
+      model: defaultProvider?.models[0]?.id || "",
       behavior_prompt_id: behaviorPrompts[0]?.id || "",
     };
     setAgents([...agents, newAgent]);
@@ -105,12 +117,13 @@ export default function TaskCreatePage() {
   const importFromGroup = async (groupId: string) => {
     try {
       const groupPersonas = await personasApi.getGroupPersonas(groupId);
+      const defaultProvider = getConfiguredProvider();
       const newAgents: AgentConfig[] = groupPersonas.map((p: PersonaSummary) => ({
         id: `agent_${Date.now()}_${p.id}`,
         name: p.name,
         persona_id: p.id,
-        provider_pack: providers[0]?.name || "",
-        model: providers[0]?.models?.[0]?.id || "",
+        provider_pack: defaultProvider?.name || "",
+        model: defaultProvider?.models?.[0]?.id || "",
         behavior_prompt_id: behaviorPrompts[0]?.id || "",
       }));
       setAgents([...agents, ...newAgents]);
@@ -122,6 +135,7 @@ export default function TaskCreatePage() {
 
   const handleSubmit = async () => {
     setLoading(true);
+    setFormError(null);
     try {
       const moderator: ModeratorConfig = moderatorType === "human"
         ? { type: "human", behavior_prompt_id: "neutral", human_name: humanModeratorName }
@@ -142,9 +156,12 @@ export default function TaskCreatePage() {
       };
 
       const task = await createTask(taskData);
+      toast({ title: "任务创建成功", description: `任务 "${name}" 已创建` });
       navigate(`/tasks/${task.id}/dashboard`);
-    } catch (error) {
-      console.error("Failed to create task:", error);
+    } catch (error: any) {
+      const msg = error?.response?.data?.detail || error?.message || "创建任务失败";
+      setFormError(typeof msg === "string" ? msg : JSON.stringify(msg));
+      toast({ title: "创建失败", description: String(msg), variant: "destructive" });
     } finally {
       setLoading(false);
     }
@@ -164,6 +181,12 @@ export default function TaskCreatePage() {
         return false;
     }
   };
+
+  // 检查是否有未配置的供应商
+  const hasUnconfiguredProvider = agents.some(a => {
+    const p = providers.find(pp => pp.name === a.provider_pack);
+    return p && p.configured === false;
+  });
 
   return (
     <div className="container mx-auto max-w-4xl">
@@ -405,11 +428,11 @@ export default function TaskCreatePage() {
                   <p className="text-sm text-gray-500">为每个参与者选择人格、LLM和行为模式</p>
                 </div>
                 <div className="flex gap-2">
-                  <Button onClick={() => setShowGroupImport(true)} variant="outline" size="sm">
+                  <Button onClick={() => setShowGroupImport(true)} variant="outline" size="sm" disabled={dataLoading}>
                     <FolderOpen className="w-4 h-4 mr-2" />
                     从分组导入
                   </Button>
-                  <Button onClick={addAgent} variant="outline" size="sm">
+                  <Button onClick={addAgent} variant="outline" size="sm" disabled={dataLoading}>
                     <Plus className="w-4 h-4 mr-2" />
                     添加参与者
                   </Button>
@@ -418,13 +441,21 @@ export default function TaskCreatePage() {
 
               {agents.length === 0 ? (
                 <div className="text-center py-8 text-gray-500">
-                  <p>还没有添加参与者</p>
-                  <Button onClick={addAgent} variant="link" className="mt-2">
-                    点击添加第一个参与者
-                  </Button>
+                  <p>{dataLoading ? "正在加载数据..." : "还没有添加参与者"}</p>
+                  {!dataLoading && (
+                    <Button onClick={addAgent} variant="link" className="mt-2">
+                      点击添加第一个参与者
+                    </Button>
+                  )}
                 </div>
               ) : (
                 <div className="space-y-4">
+                  {/* 未配置供应商警告 */}
+                  {hasUnconfiguredProvider && (
+                    <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-amber-700 text-sm">
+                      ⚠️ 部分参与者使用的 LLM 供应商未配置 API Key，请先到「供应商配置」页面填写，否则任务创建会失败。
+                    </div>
+                  )}
                   {agents.map((agent, index) => (
                     <Card key={agent.id}>
                       <CardContent className="p-4">
@@ -482,7 +513,7 @@ export default function TaskCreatePage() {
                               <SelectContent>
                                 {providers.map((provider) => (
                                   <SelectItem key={provider.name} value={provider.name}>
-                                    {provider.name}
+                                    {provider.name}{provider.configured === false ? " ⚠️ 未配置" : ""}
                                   </SelectItem>
                                 ))}
                               </SelectContent>
@@ -636,8 +667,15 @@ export default function TaskCreatePage() {
         </CardContent>
       </Card>
 
+      {/* 错误提示 */}
+      {formError && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+          ❌ {formError}
+        </div>
+      )}
+
       {/* 导航按钮 */}
-      <div className="flex justify-between">
+      <div className="flex justify-between items-center">
         <Button
           variant="outline"
           onClick={() => setCurrentStep(currentStep - 1)}
@@ -647,22 +685,41 @@ export default function TaskCreatePage() {
           上一步
         </Button>
 
-        {currentStep < steps.length - 1 ? (
-          <Button
-            onClick={() => setCurrentStep(currentStep + 1)}
-            disabled={!canProceed()}
-          >
-            下一步
-            <ArrowRight className="w-4 h-4 ml-2" />
-          </Button>
-        ) : (
-          <Button
-            onClick={handleSubmit}
-            disabled={!canProceed() || loading}
-          >
-            {loading ? "创建中..." : "创建任务"}
-          </Button>
-        )}
+        <div className="flex items-center gap-3">
+          {/* 验证提示 */}
+          {currentStep === 2 && !canProceed() && (
+            <span className="text-xs text-amber-600">
+              请确保所有参与者的「人格模板」「LLM配置」「模型」都已选择
+            </span>
+          )}
+          {currentStep === 0 && !canProceed() && (
+            <span className="text-xs text-amber-600">
+              请填写任务名称
+            </span>
+          )}
+          {currentStep === 1 && !canProceed() && (
+            <span className="text-xs text-amber-600">
+              请选择一份问卷
+            </span>
+          )}
+
+          {currentStep < steps.length - 1 ? (
+            <Button
+              onClick={() => setCurrentStep(currentStep + 1)}
+              disabled={!canProceed()}
+            >
+              下一步
+              <ArrowRight className="w-4 h-4 ml-2" />
+            </Button>
+          ) : (
+            <Button
+              onClick={handleSubmit}
+              disabled={!canProceed() || loading}
+            >
+              {loading ? "创建中..." : "创建任务"}
+            </Button>
+          )}
+        </div>
       </div>
 
       {/* Group Import Dialog */}

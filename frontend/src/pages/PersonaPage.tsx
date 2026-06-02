@@ -44,6 +44,10 @@ export default function PersonaPage() {
   const [editSaving, setEditSaving] = useState(false);
   const [editError, setEditError] = useState("");
 
+  // Optimizer target
+  const [optimizeTargetId, setOptimizeTargetId] = useState<string | null>(null);
+  const [optimizeTargetName, setOptimizeTargetName] = useState<string>("");
+
   // Group dialog
   const [groupDialog, setGroupDialog] = useState(false);
   const [editingGroupId, setEditingGroupId] = useState<string | null>(null);
@@ -60,14 +64,20 @@ export default function PersonaPage() {
   const loadData = async () => {
     setLoading(true);
     try {
-      const [personasData, templatesData, groupsData, providersData] = await Promise.all([
-        personasApi.list(), personasApi.listTemplates(), personasApi.listGroups(), providersApi.list(),
+      // 核心数据并行加载（providers 独立加载，不阻塞 personas）
+      const [personasData, templatesData, groupsData] = await Promise.all([
+        personasApi.list(), personasApi.listTemplates(), personasApi.listGroups(),
       ]);
       setPersonas(personasData);
       setTemplates(templatesData);
       setGroups(groupsData);
-      setProviders(providersData);
     } catch (error) { console.error("Failed to load data:", error); }
+
+    // providers 独立加载，失败不影响主数据
+    try {
+      const providersData = await providersApi.list();
+      setProviders(providersData);
+    } catch (error) { console.error("Failed to load providers:", error); }
     finally { setLoading(false); }
   };
 
@@ -121,6 +131,7 @@ export default function PersonaPage() {
         target_description: targetDescription,
         provider_pack: optimizeProvider,
         model: optimizeModel,
+        ...(optimizeTargetId ? { persona_id: optimizeTargetId } : {}),
       });
       setOptimizedResult(result);
     } catch (error) { console.error("Failed:", error); }
@@ -129,8 +140,14 @@ export default function PersonaPage() {
 
   const saveOptimized = async () => {
     if (!optimizedResult) return;
-    await personasApi.create(optimizedResult);
-    setShowOptimizer(false); setOptimizedResult(null); setTargetDescription(""); loadData();
+    if (optimizeTargetId) {
+      await personasApi.update(optimizeTargetId, optimizedResult);
+    } else {
+      await personasApi.create(optimizedResult);
+    }
+    setShowOptimizer(false); setOptimizedResult(null); setTargetDescription("");
+    setOptimizeTargetId(null); setOptimizeTargetName("");
+    loadData();
   };
 
   // ===== Delete =====
@@ -175,8 +192,8 @@ export default function PersonaPage() {
           <p className="text-gray-500 text-sm mt-1">{personas.length} 个人格 · {groups.length} 个分组</p>
         </div>
         <div className="flex gap-2">
-          <Button variant="outline" onClick={() => setShowOptimizer(true)}>
-            <Wand2 className="w-4 h-4 mr-2" />LLM优化
+          <Button variant="outline" onClick={() => { setOptimizeTargetId(null); setOptimizeTargetName(""); setOptimizedResult(null); setTargetDescription(""); setShowOptimizer(true); }}>
+            <Wand2 className="w-4 h-4 mr-2" />AI生成人格
           </Button>
           <Button variant="outline" onClick={openAddGroup}>
             <Layers className="w-4 h-4 mr-2" />创建分组
@@ -238,6 +255,9 @@ export default function PersonaPage() {
                   </div>
                 )}
                 <div className="flex justify-end gap-1 mt-3 pt-2 border-t opacity-0 group-hover:opacity-100 transition-opacity">
+                  <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); setOptimizeTargetId(persona.id); setOptimizeTargetName(persona.name); setOptimizedResult(null); setTargetDescription(""); setShowOptimizer(true); }}>
+                    <Wand2 className="w-3 h-3 text-purple-500" />
+                  </Button>
                   <Button size="sm" variant="ghost" onClick={(e) => { e.stopPropagation(); openEdit(persona.id); }}>
                     <Edit className="w-3 h-3" />
                   </Button>
@@ -415,6 +435,14 @@ export default function PersonaPage() {
         <DialogContent className="max-w-lg max-h-[85vh] overflow-y-auto">
           <DialogHeader><DialogTitle>LLM 优化生成人格</DialogTitle></DialogHeader>
           <div className="space-y-3 py-2">
+            {optimizeTargetId ? (
+              <div className="flex items-center gap-2 p-3 bg-purple-50 rounded-lg text-sm text-purple-700">
+                <Wand2 className="w-4 h-4" />
+                正在基于 <span className="font-semibold">「{optimizeTargetName}」</span> 进行优化调整
+              </div>
+            ) : (
+              <p className="text-sm text-gray-500">根据目标人群描述，从模板生成新的人格</p>
+            )}
             <div>
               <Label>优化使用的 LLM</Label>
               <div className="grid grid-cols-2 gap-2">

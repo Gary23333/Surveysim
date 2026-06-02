@@ -16,7 +16,7 @@ export function useWebSocket({ sessionId, onMessage, onConnect, onDisconnect }: 
   const connect = useCallback(() => {
     if (!sessionId) return;
 
-    const wsUrl = `ws://localhost:8000/ws/sessions/${sessionId}`;
+    const wsUrl = `ws://localhost:3003/ws/sessions/${sessionId}`;
     const ws = new WebSocket(wsUrl);
 
     ws.onopen = () => {

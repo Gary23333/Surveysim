@@ -5,9 +5,12 @@ from datetime import datetime
 from typing import List, Optional
 
 from fastapi import APIRouter, HTTPException
+from pydantic import BaseModel, Field
 
 from ..core.engine import engine
+from ..core.moderator import AIModerator
 from ..export.result_io import ResultExporter
+from ..llm.manager import provider_manager
 from ..models.task import (
     Task,
     TaskCreate,
@@ -337,3 +340,87 @@ async def get_task_status(task_id: str):
         raise HTTPException(status_code=404, detail="Task not found")
 
     return status
+
+
+class SummarizeRequest(BaseModel):
+    question_ids: Optional[List[str]] = Field(default=None, description="要总结的题目ID列表，默认全部")
+
+
+@router.post("/{task_id}/results/summarize/")
+async def summarize_question_results(task_id: str, request: SummarizeRequest = SummarizeRequest()):
+    """为每道题生成 AI 总结"""
+    # 获取 session 和结果
+    session = engine.sessions.get(task_id)
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    results = await engine.get_session_results(task_id)
+    if not results:
+        raise HTTPException(status_code=404, detail="Results not found")
+
+    question_results = results.get("question_results", [])
+    if not question_results:
+        return {"summaries": {}}
+
+    # 确定要总结的题目
+    target_ids = set(request.question_ids) if request.question_ids else None
+
+    # 从 session 获取 provider: 优先用 AI moderator 的, 否则用第一个 agent 的
+    provider = None
+    model = "gpt-4o-mini"
+    if session.moderator_manager and session.moderator_manager.ai_moderator:
+        provider = session.moderator_manager.ai_moderator.provider
+        model = session.moderator_manager.ai_moderator.model
+    elif session.task.agents:
+        first_agent = session.task.agents[0]
+        pack = provider_manager.get(first_agent.provider_pack)
+        if pack:
+            provider = pack.get("provider")
+            model = first_agent.model or pack.get("default_model", "gpt-4o-mini")
+
+    if not provider:
+        raise HTTPException(status_code=400, detail="No LLM provider available for summarization")
+
+    moderator = AIModerator(provider, model)
+
+    summaries = {}
+    for qr in question_results:
+        qid = qr.get("question_id", "")
+        if target_ids and qid not in target_ids:
+            continue
+
+        question_text = qr.get("question_text", "")
+        responses_data = qr.get("responses", [])
+
+        if not responses_data:
+            summaries[qid] = "暂无回答数据"
+            continue
+
+        # 构建 AgentResponse 对象列表
+        from ..models.scenario import AgentResponse
+        agent_responses = []
+        for r in responses_data:
+            agent_responses.append(AgentResponse(
+                agent_id=r.get("agent_id", ""),
+                agent_name=r.get("agent_name", ""),
+                content=r.get("content", ""),
+                emotion=r.get("emotion", "neutral"),
+                emotion_intensity=r.get("emotion_intensity", 0.5),
+                timestamp=r.get("timestamp", ""),
+                score=r.get("score"),
+            ))
+
+        try:
+            summary = await moderator.generate_question_summary(question_text, agent_responses)
+            summaries[qid] = summary
+            # 写回 session 的 results
+            if session.results:
+                for sqr in session.results.question_results:
+                    if sqr.question_id == qid:
+                        sqr.ai_summary = summary
+                        break
+        except Exception as e:
+            summaries[qid] = f"总结生成失败: {str(e)}"
+
+    return {"summaries": summaries}
+

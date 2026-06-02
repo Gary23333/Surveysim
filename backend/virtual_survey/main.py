@@ -35,26 +35,18 @@ async def lifespan(app: FastAPI):
     # 加载Provider配置
     pack_manager.load_packs()
 
-    # 注册所有Provider
+    # 注册所有Provider（包括未配置 API Key 的，查找时不会报错，实际调用时会提示）
     for pack_name in pack_manager.list_packs():
         pack = pack_manager.get_pack(pack_name)
-        if pack and pack.api_key:
+        if pack:
             provider = OpenAIProvider(
-                api_key=pack.api_key,
+                api_key=pack.api_key or "",
                 base_url=pack.base_url,
                 auth_header=pack.auth_header,
             )
             provider_manager.register(pack.name, provider)
-            print(f"{pack.name} provider registered")
-
-    # 兜底：仍尝试通过环境变量注册OpenAI
-    if settings.OPENAI_API_KEY and not provider_manager.has_provider("OpenAI"):
-        provider = OpenAIProvider(
-            api_key=settings.OPENAI_API_KEY,
-            base_url=settings.OPENAI_BASE_URL,
-        )
-        provider_manager.register("OpenAI", provider)
-        print("OpenAI provider registered (from env)")
+            status = "configured" if pack.api_key else "no API key"
+            print(f"{pack.name} provider registered ({status})")
 
     print("Virtual Survey started!")
 
@@ -76,7 +68,7 @@ app = FastAPI(
 # 配置CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:3002", "http://127.0.0.1:3002"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

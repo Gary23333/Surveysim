@@ -20,6 +20,7 @@ interface TaskStore {
   deleteTask: (taskId: string) => Promise<void>;
   fetchStatus: (taskId: string) => Promise<void>;
   fetchResults: (taskId: string) => Promise<void>;
+  applySummaries: (summaries: Record<string, string>) => void;
   setCurrentTask: (task: Task | null) => void;
   clearError: () => void;
 }
@@ -63,6 +64,18 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
   fetchStatus: async (taskId: string) => { try { const status = await tasksApi.getStatus(taskId); set({ sessionStatus: status }); } catch (error: any) { console.error("Failed to fetch status:", error); } },
   fetchResults: async (taskId: string) => { set({ loading: true }); try { const results = await tasksApi.getResults(taskId); set({ results, loading: false }); } catch (error: any) { set({ error: error.message, loading: false }); } },
+  applySummaries: (summaries: Record<string, string>) => {
+    const { results } = get();
+    if (!results) return;
+    const updatedResults = {
+      ...results,
+      question_results: results.question_results.map(qr => ({
+        ...qr,
+        ai_summary: summaries[qr.question_id] || qr.ai_summary,
+      })),
+    };
+    set({ results: updatedResults });
+  },
   setCurrentTask: (task: Task | null) => { set({ currentTask: task }); },
   clearError: () => { set({ error: null }); },
 }));

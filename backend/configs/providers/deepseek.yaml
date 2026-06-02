@@ -1,7 +1,7 @@
-name: "DeepSeek"
-base_url: "https://api.deepseek.com"
+name: DeepSeek
+base_url: https://api.deepseek.com
 api_key: "${DEEPSEEK_API_KEY}"
-default_model: "deepseek-v4-pro"
+default_model: deepseek-v4-flash
 api_params:
   max_tokens_param: "max_tokens"
   auth_header: "Authorization"
@@ -21,13 +21,13 @@ thinking_config:
     frequency_penalty:
       disabled: true
 models:
-  - id: "deepseek-v4-pro"
-    name: "DeepSeek V4 Pro"
-    max_tokens: 8192
-    supports_thinking: true
-    default_thinking: true
-  - id: "deepseek-v4-flash"
-    name: "DeepSeek V4 Flash"
-    max_tokens: 8192
-    supports_thinking: true
-    default_thinking: true
+- id: deepseek-v4-pro
+  name: DeepSeek V4 Pro
+  max_tokens: 131072
+  supports_thinking: true
+  default_thinking: true
+- id: deepseek-v4-flash
+  name: DeepSeek V4 Flash
+  max_tokens: 131072
+  supports_thinking: true
+  default_thinking: true

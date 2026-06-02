@@ -54,6 +54,7 @@ async def list_surveys():
             description=survey.get("description", ""),
             question_count=len(survey.get("questions", [])),
             version=survey.get("version", "1.0"),
+            scenario_type=survey.get("scenario_type", "survey"),
         ))
 
     return surveys
@@ -71,6 +72,7 @@ async def list_survey_templates():
             description=template.get("description", ""),
             category=template.get("category", ""),
             questions=template.get("questions", []),
+            scenario_type=template.get("scenario_type", "survey"),
         ))
 
     return templates
@@ -95,6 +97,7 @@ async def get_survey(survey_id: str):
         description=survey.get("description", ""),
         version=survey.get("version", "1.0"),
         questions=survey.get("questions", []),
+        scenario_type=survey.get("scenario_type", "survey"),
     )
 
 
@@ -113,6 +116,8 @@ async def update_survey(survey_id: str, survey_data: SurveyUpdate):
         survey["description"] = survey_data.description
     if survey_data.questions is not None:
         survey["questions"] = [q.dict() for q in survey_data.questions]
+    if survey_data.scenario_type is not None:
+        survey["scenario_type"] = survey_data.scenario_type
 
     # 保存
     survey_store.save_custom(survey_id, survey)

@@ -20,4 +20,8 @@ export const tasksApi = {
     const response = await apiClient.get(`/tasks/${taskId}/export/json/`);
     return response.data;
   },
+  generateSummaries: async (taskId: string, questionIds?: string[]) => {
+    const response = await apiClient.post(`/tasks/${taskId}/results/summarize/`, { question_ids: questionIds });
+    return response.data;
+  },
 };

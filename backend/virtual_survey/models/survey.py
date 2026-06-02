@@ -108,6 +108,7 @@ class SurveyCreate(BaseModel):
     description: str = Field(default="", description="问卷描述")
     questions: List[QuestionCreate] = Field(default_factory=list, description="问题列表")
     metadata: Optional[SurveyMetadata] = Field(default=None, description="元数据")
+    scenario_type: Optional[str] = Field(default="survey", description="场景类型")
 
 
 class SurveyUpdate(BaseModel):
@@ -116,6 +117,7 @@ class SurveyUpdate(BaseModel):
     description: Optional[str] = None
     questions: Optional[List[QuestionCreate]] = None
     metadata: Optional[SurveyMetadata] = None
+    scenario_type: Optional[str] = None
 
 
 class SurveySummary(BaseModel):
@@ -126,6 +128,7 @@ class SurveySummary(BaseModel):
     question_count: int
     version: str
     created_at: Optional[datetime] = None
+    scenario_type: Optional[str] = "survey"
 
 
 class SurveyDetail(BaseModel):
@@ -138,6 +141,7 @@ class SurveyDetail(BaseModel):
     metadata: Optional[SurveyMetadata] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    scenario_type: Optional[str] = "survey"
 
 
 class SurveyResponse(BaseModel):
@@ -154,6 +158,7 @@ class SurveyTemplate(BaseModel):
     description: str
     category: str
     questions: List[Question]
+    scenario_type: Optional[str] = "survey"
 
 
 class SurveyImportRequest(BaseModel):
